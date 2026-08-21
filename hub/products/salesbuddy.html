@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SalesBuddy · WhatsApp 私域 CRM（私有化部署）</title>
-  <meta name="description" content="SalesBuddy 功能详解与私有化部署：基于开源 wacrm 的 WhatsApp 共享收件箱、销售管道、群发与自动化，数据归你。" />
+  <meta name="description" content="SalesBuddy 功能详解与私有化部署：WhatsApp 共享收件箱、销售管道、群发与自动化，数据完全自持。" />
   <style>
     :root {
       --bg: #070b16;
@@ -89,9 +89,9 @@
 
     <div class="brand-top">JetSocio · <b>SalesBuddy</b></div>
     <h1>SalesBuddy</h1>
-    <p class="lead">把 WhatsApp 变成你的跨境销售中枢。基于开源项目 <b>wacrm</b> 构建的私域 CRM——共享收件箱、联系人、销售管道、群发与无代码自动化，全部跑在你自己的服务器上，对话数据归你所有。</p>
+    <p class="lead">把 WhatsApp 变成你的跨境销售中枢。共享收件箱、联系人、销售管道、群发与无代码自动化，全部跑在你自己的服务器上，对话数据归你所有——你的客户资源，始终握在自己手里。</p>
     <div class="tag-row">
-      <span class="chip"><span class="dot"></span> 基于 wacrm 开源</span>
+      <span class="chip"><span class="dot"></span> 客户资产沉淀</span>
       <span class="chip">私有化部署 · 数据归你</span>
       <span class="chip">WhatsApp 生态就绪</span>
     </div>
@@ -141,26 +141,12 @@
 
     <section class="deploy">
       <h2><span class="num">02</span>私有化部署</h2>
-      <p class="desc">SalesBuddy 不单独 fork，而是直接基于上游开源项目 <b>wacrm</b> 进行私有化部署——你拥有完整的代码、数据与账号体系，没有中间商抽成。</p>
+      <p class="desc">SalesBuddy 支持完全私有化部署：你的客户对话与联系人全部存放在自己的服务器上，不经过任何第三方，数据主权牢牢握在手里，随时可备份、可迁移。</p>
 
-      <div class="steps" style="margin-top:24px;">
-        <div class="step"><span class="n">1</span><div class="t"><b>准备环境</b>：一台装有 Docker 的服务器，开放 80/443 端口并准备一个域名。</div></div>
-        <div class="step"><span class="n">2</span><div class="t"><b>部署 wacrm</b>：拉取上游仓库，按其官方文档一键启动（SalesBuddy 即 wacrm 的私有化实例）。</div></div>
-        <div class="step"><span class="n">3</span><div class="t"><b>接入 WhatsApp</b>：在 Meta 后台创建 WhatsApp Business 应用，填好 Webhook 与令牌。</div></div>
-        <div class="step"><span class="n">4</span><div class="t"><b>配置团队</b>：创建坐席、分配号码、导入客户，即可开始收件与跟进。</div></div>
-      </div>
-
-      <pre><code class="key"># 1. 获取上游开源仓库
-git clone https://github.com/ArnasDon/wacrm.git
-cd wacrm
-
-# 2. 按官方文档启动（Docker 编排）
-docker compose up -d
-
-# 3. 浏览器访问并绑定你的域名 + WhatsApp Business API</code></pre>
-
-      <div class="note">
-        <b>关于「SalesBuddy」与「wacrm」</b>：SalesBuddy 是 JetSocio 对这套私域 CRM 能力的命名包装，底层即开源 wacrm。我们不在上游之外另起 fork，而是建议你直接部署 wacrm 并自行保留品牌定制空间，最大化代码可追溯性与安全更新能力。
+      <div class="steps" style="margin-top: 24px;">
+        <div class="step"><span class="n">1</span><div class="t"><b>绑定 WhatsApp</b>：在 Meta 后台创建 WhatsApp Business 应用，把号码接入 SalesBuddy，所有客户对话即可进入统一收件箱。</div></div>
+        <div class="step"><span class="n">2</span><div class="t"><b>导入客户</b>：批量导入联系人或从历史聊天自动沉淀，给客户打标签、分组，建立你的私域资产。</div></div>
+        <div class="step"><span class="n">3</span><div class="t"><b>开始跟进</b>：用销售管道管理「询盘 → 报价 → 成交」，群发与自动化帮你把每一个询盘都接住。</div></div>
       </div>
     </section>
 
@@ -168,12 +154,12 @@ docker compose up -d
       <h3>让你的询盘不再漏回</h3>
       <p>先回到工作台免费体验 GEO 体检，再决定如何部署你的销售中枢。</p>
       <a href="../index.html#products" class="btn btn-primary">返回工作台</a>
-      <a href="https://github.com/ArnasDon/wacrm" class="btn btn-ghost">上游仓库 wacrm</a>
+      <a href="products/geo-pro.html" class="btn btn-ghost">了解 Geo Pro</a>
     </section>
   </div>
 
   <footer>
-    <div class="footer-inner">© JetSocio · SalesBuddy 基于 wacrm 开源 · 数据归你所有</div>
+    <div class="footer-inner">© JetSocio · SalesBuddy 私有化部署 · 数据归你所有</div>
   </footer>
 </body>
 </html>
