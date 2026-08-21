@@ -47,22 +47,22 @@ class ReleaseVersionMappingTest extends TestCase
 
         $this->assertSame("v{$version}", $tag);
         $this->assertSame(
-            "https://github.com/yaojingang/GEOFlow/archive/refs/tags/{$tag}.zip",
+            "https://github.com/bluesxxx/geo-pro/archive/refs/tags/{$tag}.zip",
             $manifest['archive_url'],
         );
         $this->assertSame(
-            "https://github.com/yaojingang/GEOFlow/releases/tag/{$tag}",
+            "https://github.com/bluesxxx/geo-pro/releases/tag/{$tag}",
             $payload['release_url'],
         );
         $this->assertSame(
-            "https://github.com/yaojingang/GEOFlow/blob/{$tag}/docs/CHANGELOG.md",
+            "https://github.com/bluesxxx/geo-pro/blob/{$tag}/docs/CHANGELOG.md",
             $payload['changelog_url_zh'],
         );
         $this->assertSame(
-            "https://github.com/yaojingang/GEOFlow/blob/{$tag}/docs/CHANGELOG_en.md",
+            "https://github.com/bluesxxx/geo-pro/blob/{$tag}/docs/CHANGELOG_en.md",
             $payload['changelog_url_en'],
         );
-        $this->assertSame("GEOFlow v{$version}", $payload['title_zh']);
-        $this->assertSame("GEOFlow v{$version}", $payload['title_en']);
+        $this->assertSame("GEO PRO v{$version}", $payload['title_zh']);
+        $this->assertSame("GEO PRO v{$version}", $payload['title_en']);
     }
 }

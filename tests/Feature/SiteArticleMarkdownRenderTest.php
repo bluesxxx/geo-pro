@@ -460,7 +460,7 @@ MD);
             ->assertSee('data-home-poster-carousel', false)
             ->assertSee('https://example.com/banner-one.jpg', false)
             ->assertSee('Banner One')
-            ->assertSee('GEOFlow Feed')
+            ->assertSee('GEO PRO Feed')
             ->assertSee('GEOFlow Demo')
             ->assertSee('Demo homepage description');
     }

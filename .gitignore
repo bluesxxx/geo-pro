@@ -4,6 +4,7 @@
 /docker-data
 /logs
 /uploads
+/public/uploads/
 .env
 .env.prod
 .env.backup

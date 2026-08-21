@@ -21,12 +21,22 @@ GEO PRO 以 [Apache License 2.0](LICENSE) 开源发布。本 fork 保留上游�
 git clone https://github.com/bluesxxx/geo-pro.git
 cd geo-pro
 cp .env.prod.example .env.prod   # 按需修改 APP_URL / 数据库 / 管理员账号
-docker compose -f docker-compose.prod.yml up -d
+docker compose --env-file .env.prod -f docker-compose.prod.yml up -d
 ```
 
 访问 `http://<host>:18080`。更多部署方式见 [docs/deployment/DEPLOYMENT.md](docs/deployment/DEPLOYMENT.md) 与 [deploy-scripts](deploy-scripts/)。
 
 > 首次空库部署会自动迁移并导入 50 篇参考内容；已有数据升级不会覆盖站点设置与文章。
+
+### 队列与常驻进程
+
+生产 compose 已内置四条专用队列 worker（Horizon 管理，见 `docker-compose.prod.yml`）：
+
+- `default,distribution,theme-replication` —— 主队列与多渠道分发
+- `knowledge-queue` —— 知识库向量化（嵌入/切片/索引）
+- `system-update-queue` —— 系统更新与备份任务
+
+拉起完整栈：`docker compose --env-file .env.prod -f docker-compose.prod.yml up -d app web queue scheduler reverb`；单机部署也可按需只启动部分服务。
 
 ## 🔌 环境变量要点
 

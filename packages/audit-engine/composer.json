@@ -1,0 +1,19 @@
+{
+    "name": "bluesxxx/audit-engine",
+    "description": "Framework-agnostic website GEO audit engine (fetch -> feature extraction -> heuristic scoring). Shared between GEO PRO (Laravel) and the JetSocio audit API (plain PHP).",
+    "type": "library",
+    "license": "Apache-2.0",
+    "require": {
+        "php": "^8.1",
+        "ext-dom": "*",
+        "ext-libxml": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "GeoPro\\AuditEngine\\": "src/"
+        }
+    },
+    "scripts": {
+        "test": "php tests/run.php"
+    }
+}

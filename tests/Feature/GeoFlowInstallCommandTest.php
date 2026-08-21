@@ -53,15 +53,16 @@ HTML;
             'geoflow-template-21-enterprise-signature',
             SiteSetting::query()->where('setting_key', 'active_theme')->value('setting_value'),
         );
+        // GEO PRO fork 默认不注入任何站点统计代码（上游百度统计已移除）。
         $this->assertSame(
-            self::BAIDU_ANALYTICS_EXAMPLE,
+            '',
             SiteSetting::query()->where('setting_key', 'analytics_code')->value('setting_value'),
         );
         $response = $this->get(route('site.home'))
             ->assertOk()
-            ->assertSee('https://hm.baidu.com/hm.js?1743638f313788caa4cb55e299444a87', false);
+            ->assertDontSee('https://hm.baidu.com/hm.js?1743638f313788caa4cb55e299444a87', false);
         $this->assertSame(
-            1,
+            0,
             substr_count($response->getContent(), 'https://hm.baidu.com/hm.js?1743638f313788caa4cb55e299444a87'),
         );
 
@@ -223,8 +224,9 @@ HTML;
             'geoflow-template-21-enterprise-signature',
             SiteSetting::query()->where('setting_key', 'active_theme')->value('setting_value'),
         );
+        // 品牌化后默认不再注入百度统计脚本，analytics_code 应为空。
         $this->assertSame(
-            self::BAIDU_ANALYTICS_EXAMPLE,
+            '',
             SiteSetting::query()->where('setting_key', 'analytics_code')->value('setting_value'),
         );
 

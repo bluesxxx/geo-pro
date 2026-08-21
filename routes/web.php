@@ -43,6 +43,7 @@ use App\Http\Controllers\Admin\UrlImportController;
 use App\Http\Controllers\Site\AboutController;
 use App\Http\Controllers\Site\ArchiveController;
 use App\Http\Controllers\Site\ArticleController as SiteArticleController;
+use App\Http\Controllers\Site\AuditController;
 use App\Http\Controllers\Site\CategoryController as SiteCategoryController;
 use App\Http\Controllers\Site\HomeController;
 use Illuminate\Support\Facades\Auth;
@@ -51,6 +52,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['site.locale', 'site.view_log'])->group(function (): void {
     Route::get('/', [HomeController::class, 'index'])->name('site.home');
     Route::get('/about', [AboutController::class, 'index'])->name('site.about');
+    Route::get('/audit', [AuditController::class, 'form'])->name('site.audit.form');
+    Route::post('/audit', [AuditController::class, 'run'])
+        ->middleware('throttle:10,1')
+        ->name('site.audit.run');
+    Route::get('/audit/{auditRun:uuid}', [AuditController::class, 'show'])->name('site.audit.show');
     Route::get('/archive', [ArchiveController::class, 'index'])->name('site.archive');
     Route::get('/archive/{year}/{month}', [ArchiveController::class, 'month'])
         ->name('site.archive.month')

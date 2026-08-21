@@ -44,8 +44,21 @@ class GrowthOverviewService
                 'leads' => $leads,
                 'distribution' => $distribution,
             ],
-            'alert' => $this->alert($leads, $distribution, $content['failed_tasks'], (bool) ($ai['configured'] ?? false), $includeDistribution),
+            'alert' => $this->alert($leads, $distribution, $this->totalFailedTasks(), (bool) ($ai['configured'] ?? false), $includeDistribution),
         ];
+    }
+
+    /**
+     * 累计失败任务数：alert 提醒的是「还有未处理的历史失败」，不受 7 天窗口限制；
+     * 卡片 failed_tasks 仍用 7 天窗口（见 contentSnapshot）。
+     */
+    private function totalFailedTasks(): int
+    {
+        if (! Schema::hasTable('task_runs')) {
+            return 0;
+        }
+
+        return (int) TaskRun::query()->where('status', 'failed')->count();
     }
 
     /** @return array{pv: int, unique_ip: int, ai: int} */

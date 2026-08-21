@@ -108,9 +108,9 @@ class AdminDashboardQuickStartTest extends TestCase
             ->assertSee(route('admin.distribution.index'), false)
             ->assertSee(route('admin.distribution.create'), false)
             ->assertSee(route('admin.distribution.jobs'), false)
-            ->assertSee('https://github.com/yaojingang/yao-geo-skills/tree/main/skills/yao-geoflow-template', false)
-            ->assertSee('https://github.com/yaojingang/yao-geo-skills/tree/main/skills/yao-geoflow-design', false)
-            ->assertSee('https://github.com/yaojingang/yao-geo-skills/tree/main/skills/yao-geoflow-cli', false);
+            ->assertSee('https://github.com/bluesxxx/geo-pro', false)
+            ->assertSee('https://github.com/bluesxxx/geo-pro', false)
+            ->assertSee('https://github.com/bluesxxx/geo-pro', false);
 
         $html = $response->getContent();
         $this->assertGreaterThanOrEqual(1, substr_count($html, route('admin.knowledge-bases.index')));
@@ -278,8 +278,8 @@ class AdminDashboardQuickStartTest extends TestCase
             ->getContent();
 
         $this->assertStringContainsString(__('admin.footer.help_docs_link'), $zhHtml);
-        $this->assertStringContainsString('https://github.com/yaojingang/GEOFlow/wiki', $zhHtml);
-        $this->assertStringNotContainsString('https://github.com/yaojingang/GEOFlow/wiki/Home-English', $zhHtml);
+        $this->assertStringContainsString('https://github.com/bluesxxx/geo-pro/wiki', $zhHtml);
+        $this->assertStringNotContainsString('https://github.com/bluesxxx/geo-pro/wiki/Home-English', $zhHtml);
 
         session(['locale' => 'en']);
 
@@ -289,6 +289,6 @@ class AdminDashboardQuickStartTest extends TestCase
             ->getContent();
 
         $this->assertStringContainsString('Help docs', $enHtml);
-        $this->assertStringContainsString('https://github.com/yaojingang/GEOFlow/wiki/Home-English', $enHtml);
+        $this->assertStringContainsString('https://github.com/bluesxxx/geo-pro/wiki/Home-English', $enHtml);
     }
 }

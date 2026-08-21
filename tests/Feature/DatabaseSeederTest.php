@@ -135,10 +135,10 @@ class DatabaseSeederTest extends TestCase
         $this->assertSame(10, $category->sort_order);
 
         $author->refresh();
-        $this->assertSame('GEOFlow 编辑部', $author->name);
+        $this->assertSame('GEO PRO 编辑部', $author->name);
 
         $article = Article::query()->where('slug', 'gnflg8xg')->firstOrFail();
-        $this->assertSame('GEOFlow 2.3.0 是什么？面向 AI 搜索的开源内容工程系统详解', $article->title);
+        $this->assertSame('GEO PRO 2.3.0 是什么？面向 AI 搜索的开源内容工程系统详解', $article->title);
         $this->assertStringContainsString('系统定位：内容工程', $article->content);
     }
 }

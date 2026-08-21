@@ -40,7 +40,6 @@ class AdminAnalyticsPageTest extends TestCase
             ->assertSee(route('admin.analytics.content'), false)
             ->assertSee(route('admin.analytics.traffic'), false)
             ->assertSee(route('admin.analytics.ai-visibility'), false)
-            ->assertSee(route('admin.analytics.leads'), false)
             ->assertSee(route('admin.analytics.distribution'), false)
             ->assertDontSee('data-analytics-single-site-section', false)
             ->assertDontSee('data-analytics-log-section', false)
@@ -70,7 +69,6 @@ class AdminAnalyticsPageTest extends TestCase
             ->get(route('admin.analytics'))
             ->assertOk()
             ->assertSee(route('admin.analytics.content'), false)
-            ->assertDontSee(route('admin.analytics.leads'), false)
             ->assertDontSee(route('admin.analytics.distribution'), false);
     }
 

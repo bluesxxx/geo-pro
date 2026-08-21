@@ -12,22 +12,22 @@ class SecurityReleaseMetadataTest extends TestCase
         $payload = $manifest['payload'];
 
         $this->assertSame('2.3.0', $manifest['version']);
-        $this->assertSame('2026-08-09', $manifest['release_date']);
-        $this->assertSame('minor', $manifest['release_type']);
+        $this->assertSame('2026-08-21', $manifest['release_date']);
+        $this->assertSame('fork', $manifest['release_type']);
         $this->assertSame(
-            'https://github.com/yaojingang/GEOFlow/archive/refs/tags/v2.3.0.zip',
+            'https://github.com/bluesxxx/geo-pro/archive/refs/tags/v2.3.0.zip',
             $manifest['archive_url'],
         );
         $this->assertSame(
-            'https://github.com/yaojingang/GEOFlow/releases/tag/v2.3.0',
+            'https://github.com/bluesxxx/geo-pro/releases/tag/v2.3.0',
             $payload['release_url'],
         );
         $this->assertSame(
-            'https://github.com/yaojingang/GEOFlow/blob/v2.3.0/docs/CHANGELOG.md',
+            'https://github.com/bluesxxx/geo-pro/blob/v2.3.0/docs/CHANGELOG.md',
             $payload['changelog_url_zh'],
         );
         $this->assertSame(
-            'https://github.com/yaojingang/GEOFlow/blob/v2.3.0/docs/CHANGELOG_en.md',
+            'https://github.com/bluesxxx/geo-pro/blob/v2.3.0/docs/CHANGELOG_en.md',
             $payload['changelog_url_en'],
         );
 

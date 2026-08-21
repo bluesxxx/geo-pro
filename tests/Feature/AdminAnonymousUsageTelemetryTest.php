@@ -11,12 +11,10 @@ use Tests\TestCase;
 
 class AdminAnonymousUsageTelemetryTest extends TestCase
 {
-    public function test_official_telemetry_endpoint_is_configured_by_default(): void
+    public function test_telemetry_endpoint_is_not_configured_by_default(): void
     {
-        $this->assertSame(
-            'https://geoflow-telemetry-gateway.pages.dev/api/pulse',
-            config('geoflow.telemetry_endpoint'),
-        );
+        // GEO PRO fork 默认关闭遥测：不向任何外部端点上报数据。
+        $this->assertSame('', config('geoflow.telemetry_endpoint'));
     }
 
     use RefreshDatabase;

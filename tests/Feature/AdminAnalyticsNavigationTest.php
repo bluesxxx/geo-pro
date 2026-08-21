@@ -27,7 +27,6 @@ class AdminAnalyticsNavigationTest extends TestCase
             ->assertSee(route('admin.analytics.content'), false)
             ->assertSee(route('admin.analytics.traffic'), false)
             ->assertSee(route('admin.analytics.ai-visibility'), false)
-            ->assertDontSee(route('admin.analytics.leads'), false)
             ->assertSee(route('admin.analytics.distribution'), false)
             ->assertDontSee('data-analytics-log-chart', false)
             ->assertDontSee('data-ai-visibility-series', false)

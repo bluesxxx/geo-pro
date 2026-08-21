@@ -13,6 +13,7 @@ use App\Services\GeoFlow\HorizonMetricsAdapter;
 use App\Services\GeoFlow\JobQueueService;
 use App\Services\GeoFlow\TaskLifecycleService;
 use App\Services\GeoFlow\TaskMonitoringQueryService;
+use App\Services\GeoFlow\WebsiteAuditService;
 use App\Services\Outbound\FinalOutboundSecurityPolicy;
 use App\Services\Outbound\LaravelPinnedOutboundTransport;
 use App\Services\Outbound\SafeOutboundHttpClient;
@@ -20,6 +21,7 @@ use App\Services\Outbound\SecureHttpFactory;
 use App\Services\Outbound\SystemHostResolver;
 use App\View\Composers\SiteLayoutComposer;
 use Closure;
+use GeoPro\AuditEngine\WebPageFetcherInterface;
 use GuzzleHttp\Utils;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Client\Factory as HttpFactory;
@@ -62,6 +64,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(TaskMonitoringQueryService::class);
         $this->app->singleton(TaskLifecycleService::class);
         $this->app->singleton(ArticleGeoFlowService::class);
+
+        // 体检钩子：audit-engine 的抓取器绑定到 SSRF 白名单网关实现。
+        $this->app->bind(WebPageFetcherInterface::class, WebsiteAuditService::class);
     }
 
     /**
