@@ -1,160 +1,296 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>JetSocio — 独立开发者的工具套件</title>
-<meta name="description" content="JetSocio 出品四款工具：GEO PRO 网站 GEO 体检与内容平台、salesbuddy WhatsApp CRM、PackMeta 3D 装箱优化、DocuConsist 外贸单证核验。免费体验 GEO 体检。">
-<meta property="og:title" content="JetSocio — 独立开发者的工具套件">
-<meta property="og:description" content="免费体检你的网站 GEO 表现，并发现更多自托管与云端工具。">
-<meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231D4ED8'/><path d='M7 6h18v5H13v3h9v5h-9v3h12v5H7z' fill='white'/></svg>">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: { extend: {
-    colors: { brand: { 50:'#eff6ff', 100:'#dbeafe', 600:'#2563eb', 700:'#1d4ed8', 800:'#1e40af', 900:'#1e3a8a' } }
-  } }
-};
-</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JetSocio · 跨境电商全链路工具栈</title>
+  <meta name="description" content="JetSocio —— 覆盖「被发现、转化、履约、合规」的跨境业务工具栈：GEO PRO、salesbuddy、PackMeta、DocuConsist。" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: "#eef4ff",
+              100: "#dbe7ff",
+              200: "#bcd0ff",
+              400: "#5b8cff",
+              500: "#3b6fff",
+              600: "#2563eb",
+              700: "#1d4ed8",
+              800: "#1e3a8a",
+            },
+          },
+          fontFamily: {
+            sans: ["system-ui", "-apple-system", "Segoe UI", "Microsoft YaHei", "sans-serif"],
+          },
+        },
+      },
+    };
+  </  script>
+  <style>
+    :root {
+      --bg: #070b16;
+      --bg-soft: #0d1424;
+      --line: rgba(120, 160, 255, 0.14);
+      --text: #e6ecf5;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+    }
+    * { scroll-behavior: smooth; }
+    html, body { background: var(--bg); color: var(--text); }
+    body { font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; -webkit-font-smoothing: antialiased; }
+
+    /* layered tech background: subtle grid + drifting glows */
+    .tech-bg {
+      position: fixed; inset: 0; z-index: -2;
+      background:
+        radial-gradient(900px 600px at 12% -8%, rgba(56, 189, 248, 0.14), transparent 60%),
+        radial-gradient(800px 500px at 100% 0%, rgba(37, 99, 235, 0.16), transparent 55%),
+        radial-gradient(700px 700px at 50% 120%, rgba(99, 102, 241, 0.10), transparent 60%),
+        var(--bg);
+    }
+    .tech-grid {
+      position: fixed; inset: 0; z-index: -1;
+      background-image:
+        linear-gradient(rgba(120, 160, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba( 120, 160, 255, 0.05) 1px, transparent 1px);
+      background-size: 46px 46px;
+      mask-image: radial-gradient(900px 700px at 50% 0%, #000 30%, transparent 80%);
+    }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015)); border: 1px solid var(--line); }
+    .glow-ring { box-shadow: 0 0 0 1px rgba(56,189,248,0.18), 0 12px 40px -12px rgba(37,99,235,0.45); }
+    .chip { border: 1px solid var(--line); background: rgba(255,255,255,0.04); }
+    .btn-primary { background: linear-gradient(135deg, #3b6fff, #2563eb); }
+    .btn-ghost { border: 1px solid rgba(120,160,255,0.4); }
+    .step-line::before { content: ""; }
+    .underline-grow { background-image: linear-gradient(var(--accent), var(--accent)); background-size: 0% 2px; background-repeat: no-repeat; background-position: 0 100%; transition: background-size .3s; }
+    .underline-grow:hover { background-size: 100% 2px; }
+    @media (prefers-reduced-motion: reduce) { .tech-bg, .tech-grid { animation: none; } }
+  </style>
 </head>
-<body class="bg-white text-gray-900 antialiased">
+<body class="min-h-screen">
+  <div class="tech-bg"></div>
+  <div class="tech-grid"></div>
 
-<!-- Header -->
-<header class="sticky top-0 z-40 border-b border-gray-100 bg-white/90 backdrop-blur">
-  <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-    <a href="/" class="flex items-center gap-2">
-      <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-700 text-white text-lg font-bold">J</span>
-      <span class="text-lg font-semibold tracking-tight">JetSocio</span>
-    </a>
-    <nav class="flex items-center gap-1 text-sm">
-      <a href="#products" class="rounded-md px-3 py-2 text-gray-600 hover:bg-gray-50 hover:text-gray-900">产品</a>
-      <a href="/deploy.html" class="rounded-md px-3 py-2 text-gray-600 hover:bg-gray-50 hover:text-gray-900">部署文档</a>
-    </nav>
-  </div>
-</header>
+  <!-- Nav -->
+  <header class="sticky top-0 z-30 backdrop-blur-xl bg-[#070b16]/70 border-b border-white/10">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+      <div class="flex items-center gap-2.5">
+        <span class="flex h-9 w-9 items-center justify-center rounded-xl btn-primary font-bold text-white">J</span>
+        <span class="text-lg font-semibold tracking-tight">JetSocio</span>
+        <span class="hidden sm:inline text-xs text-slate-400">跨境业务工具栈</span>
+      </div>
+      <nav class="hidden md:flex items-center gap-7 text-sm text-slate-300">
+        <a href="#value" class="hover:text-white transition">业务价值</a>
+        <a href="#products" class="hover:text-white transition">产品矩阵</a>
+        <a href="#chain" class="hover:text-white transition">全链路</a>
+      </nav>
+      <a href="https://github.com/bluesxxx/geo-pro" target="_blank" rel="noopener"
+         class="text-sm font-medium text-white btn-ghost rounded-lg px-4 py-2 hover:bg-white/10 transition">GitHub</a>
+    </div>
+  </header>
 
-<main>
-  <!-- Hero: GEO 体检 -->
-  <section class="bg-gradient-to-b from-brand-50/80 to-white">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24 text-center">
-      <p class="inline-flex items-center rounded-full bg-brand-100 px-4 py-1.5 text-xs font-semibold text-brand-700">
-        <svg class="mr-1.5 h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-        免费 · 免登录 · 秒出报告
-      </p>
-      <h1 class="mx-auto mt-6 max-w-3xl text-4xl sm:text-5xl font-bold tracking-tight leading-tight">
-        你的网站，AI 会引用吗？
-      </h1>
-      <p class="mx-auto mt-5 max-w-2xl text-lg text-gray-600 leading-relaxed">
-        输入网址，立即检查影响「生成式引擎优化」的三大信号：
-        <span class="whitespace-nowrap">H1 主标题</span> ·
-        <span class="whitespace-nowrap">JSON-LD 结构化数据</span> ·
-        <span class="whitespace-nowrap">FAQPage</span>
-      </p>
+  <!-- Hero -->
+  <main class="mx-auto max-w-6xl px-5 pt-16 pb-10">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <section class="max-w-xl">
+        <span class="chip inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs text-slate-300 mb-5">
+          <span class="h-2 w-2 rounded-full bg-emerald-400"></span> 4 款工具 · 一套跨境增长闭环
+        </span>
+        <h1 class="text-4xl sm:text-5xl font-bold leading-tight tracking-tight">
+          从「被 AI 看见」<br />到「顺利签收」
+        </h1>
+        <p class="mt-5 text-lg text-slate-300 leading-relaxed">
+          跨境生意的每一环都在漏钱：<span class="text-white font-medium">没人搜得到你</span>、
+          <span class="text-white font-medium">询盘接不住</span>、
+          <span class="text-white font-medium">装柜太亏</span>、
+          <span class="text-white font-medium">单证被退</span>。
+          JetSocio 把四个环节的工具收进一个工作台，让获客、转化、履约、合规一次补齐。
+        </p>
 
-      <form id="audit-form" class="mx-auto mt-9 flex max-w-xl flex-col gap-3 sm:flex-row">
-        <input id="audit-url" type="url" required placeholder="https://example.com"
-               class="h-14 flex-1 rounded-xl border-0 bg-white px-5 text-base shadow-lg ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-brand-600 outline-none">
-        <button id="audit-submit" type="submit"
-                class="inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-brand-700 px-8 text-base font-semibold text-white shadow-lg shadow-brand-700/25 hover:bg-brand-800 transition-colors">
-          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          免费体检
-        </button>
-      </form>
-      <p class="mt-4 text-xs text-gray-400">体检由 JetSocio 审计引擎完成 · 仅分析页面结构，不存储任何提交内容</p>
+        <div class="mt-8 flex flex-wrap gap-4 text-sm">
+          <div class="card rounded-xl px-4 py-3">
+            <div class="text-2xl font-bold text-white">+20%</div>
+            <div class="text-slate-400">装箱空间利用率</div>
+          </div>
+          <div class="card rounded-xl px-4 py-3">
+            <div class="text-2xl font-bold text-white">&lt;5%</div>
+            <div class="text-slate-400">单证误报率</div>
+          </div>
+          <div class="card rounded-xl px-4 py-3">
+            <div class="text-2xl font-bold text-white">100%</div>
+            <div class="text-slate-400">核心数据自持</div>
+          </div>
+        </div>
+      </section>
 
-      <!-- 报告区（体检后显示） -->
-      <div id="audit-report" class="mx-auto mt-12 hidden max-w-3xl text-left"></div>
-      <div id="audit-loading" class="mx-auto mt-12 hidden max-w-3xl">
-        <div class="rounded-2xl bg-white p-10 shadow-sm ring-1 ring-gray-100">
-          <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-brand-100 border-t-brand-700"></div>
-          <p class="mt-4 text-center text-sm text-gray-500">正在抓取并分析目标页面…</p>
+      <!-- GEO 体检卡（与 report.js 集成，保持原有 ID） -->
+      <section class="card glow-ring rounded-2xl p-6 sm:p-7">
+        <h2 class="text-base font-semibold text-white">免费 GEO 体检</h2>
+        <p class="mt-1 text-sm text-slate-400">输入网址，30 秒看你的页面是否被 AI 优先引用。</p>
+        <form id="audit-form" class="mt-5 space-y-3">
+          <label for="audit-url" class="sr-only">网站地址</label>
+          <input id="audit-url" type="text" placeholder="example.com"
+                 class="w-full rounded-lg bg-black/30 border border-white/15 px-4 py-3 text-white placeholder:text-slate-500 outline-none focus:border-brand-400" />
+          <button id="audit-submit" type="submit"
+                  class="w-full btn-primary rounded-lg py-3 font-semibold text-white hover:opacity-90 transition">
+            免费体检
+          </button>
+        </form>
+        <div id="audit-loading" class="hidden mt-4 text-sm text-slate-400">体检中…</div>
+        <div id="audit-report"></div>
+      </section>
+    </div>
+
+    <!-- Cross-border value chain -->
+    <section id="value" class="mt-20">
+      <h2 class="text-2xl font-bold text-white">跨境业务，卡在哪一步？</h2>
+      <p class="mt-2 text-slate-400 max-w-2xl">四个高频痛点，对应 JetSocio 的四款工具。从流量到签收，每一步都补上。</p>
+
+      <div class="mt-8 grid gap-4 md:grid-cols-4">
+        <div class="card rounded-2xl p-5">
+          <div class="text-xs uppercase tracking-wider text-brand-400">01 · 获客</div>
+          <h3 class="mt-2 font-semibold text-white">没人搜得到你</h3>
+          <p class="mt-2 text-sm text-slate-400">买家在 ChatGPT / 豆包 / DeepSeek 问「哪家供应商好」，AI 根本不引用你。</p>
+        </div>
+        <div class="card rounded-2xl p-5">
+          <div class="text-xs uppercase tracking-wider text-brand-400">02 · 转化</div>
+          <h3 class="mt-2 font-semibold text-white">询盘接不住</h3>
+          <p class="mt-2 text-sm text-slate-400">WhatsApp 消息散落各处，跟进靠记忆，订单在聊天里溜走。</p>
+        </div>
+        <div class="card rounded-2xl p-5">
+          <div class="text-xs uppercase tracking-wider text-brand-400">03 · 履约</div>
+          <h3 class="mt-2 font-semibold text-white">装箱太亏</h3>
+          <p class="mt-2 text-sm text-slate-400">柜子装不满、危险品隔离靠手算，每一柜都多花冤枉钱。</p>
+        </div>
+        <div class="card rounded-2xl p-5">
+          <div class="text-xs uppercase tracking-wider text-brand-400">04 · 合规</div>
+          <h3 class="mt-2 font-semibold text-white">单证被退</h3>
+          <p class="mt-2 text-sm text-slate-400">报关单、发票、提单对不上，清关延误、客户信任受损。</p>
         </div>
       </div>
+    </section>
+
+    <!-- Product matrix -->
+    <section id="products" class="mt-20">
+      <h2 class="text-2xl font-bold text-white">产品矩阵</h2>
+      <p class="mt-2 text-slate-400 max-w-2xl">每一款都可独立使用，组合在一起构成完整的跨境工作流。</p>
+
+      <div id="chain" class="mt-8 grid gap-5 md:grid-cols-2">
+        <!-- GEO PRO -->
+        <article class="card rounded-2xl p-6 hover:border-brand-400/50 transition">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl btn-primary text-white font-bold">G</span>
+              <div>
+                <h3 class="font-semibold text-white">GEO PRO</h3>
+                <p class="text-xs text-slate-400">AI 内容 + GEO 引用优化</p>
+              </div>
+            </div>
+            <span class="chip rounded-full px-3 py-1 text-xs text-brand-200">自托管</span>
+          </div>
+          <p class="mt-4 text-sm text-slate-300">让 AI 搜索引擎优先引用你的内容。内置知识库、AI 生成、AI 可见性观测与多渠道分发，本地部署、数据完全自持。</p>
+          <ul class="mt-4 space-y-2 text-sm text-slate-300">
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> 提升在 LLM 回答中的引用概率</li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> 内容生产 → 观测 → 分发闭环</li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> 整站零外部 API 依赖</li>
+          </ul>
+          <a href="https://github.com/bluesxxx/geo-pro" target="_blank" rel="noopener"
+             class="mt-5 inline-flex items-center gap-1 text-sm font-medium text-brand-200 hover:text-white underline-grow">查看仓库 →</a>
+        </article>
+
+        <!-- salesbuddy -->
+        <article class="card rounded-2xl p-6 hover:border-brand-400/50 transition">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-700 text-white font-bold">S</span>
+              <div>
+                <h3 class="font-semibold text-white">salesbuddy</h3>
+                <p class="text-xs text-slate-400">WhatsApp 私域 CRM（基于 wacrm）</p>
+              </div>
+            </div>
+            <span class="chip rounded-full px-3 py-1 text-xs text-brand-200">开源</span>
+          </div>
+          <p class="mt-4 text-sm text-slate-300">把 WhatsApp 变成销售中枢：共享收件箱、联系人、销售管道、群发与无代码自动化——自托管、数据归你。</p>
+          <ul class="mt-4 space-y-2 text-sm text-slate-300">
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> 询盘自动归集，不再漏回</li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> 销售管道可视化跟进</li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> 群发 + 自动化工作流</li>
+          </ul>
+          <a href="https://github.com/ArnasDon/wacrm" target="_blank" rel="noopener"
+             class="mt-5 inline-flex items-center gap-1 text-sm font-medium text-brand-200 hover:text-white underline-grow">上游仓库 →</a>
+        </article>
+
+        <!-- PackMeta -->
+        <article class="card rounded-2xl p-6 hover:border-brand-400/50 transition">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-600 text-white font-bold">P</span>
+              <div>
+                <h3 class="font-semibold text-white">PackMeta</h3>
+                <p class="text-xs text-slate-400">3D 装箱优化平台</p>
+              </div>
+            </div>
+            <span class="chip rounded-full px-3 py-1 text-xs text-brand-200">在线</span>
+          </div>
+          <p class="mt-4 text-sm text-slate-300">上传装箱单，30 秒生成 3D 装柜方案。空间利用率 +20%，IMDG 危险品隔离 / LIFO / 承重校验一键完成。</p>
+          <ul class="mt-4 space-y-2 text-sm text-slate-300">
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> 六大行业模板（冷链/化工/大件…）</li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> 运费立省、PDF 装柜报告</li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> Three.js 3D 预览</li>
+          </ul>
+          <a href="https://packmeta.pages.dev/" target="_blank" rel="noopener"
+             class="mt-5 inline-flex items-center gap-1 text-sm font-medium text-brand-200 hover:text-white underline-grow">访问 Demo →</a>
+        </article>
+
+        <!-- DocuConsist -->
+        <article class="card rounded-2xl p-6 hover:border-brand-400/50 transition">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-600 text-white font-bold">D</span>
+              <div>
+                <h3 class="font-semibold text-white">DocuConsist</h3>
+                <p class="text-xs text-slate-400">外贸单证一致核验</p>
+              </div>
+            </div>
+            <span class="chip rounded-full px-3 py-1 text-xs text-brand-200">在线</span>
+          </div>
+          <p class="mt-4 text-sm text-slate-300">上传报关单 / 发票 / 提单 / 合同（≤8 份），30 秒跨单「三一致」比对，每条提示可溯源（UCP600 / ISBP）。</p>
+          <ul class="mt-4 space-y-2 text-sm text-slate-300">
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> 单证不符 / FOB 责任错配预警</li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> OFAC 制裁筛查、运费单核验</li>
+            <li class="flex gap-2"><span class="text-emerald-400">✓</span> 误报率 &lt;5%，免费免登录</li>
+          </ul>
+          <a href="https://docuconsist.com/" target="_blank" rel="noopener"
+             class="mt-5 inline-flex items-center gap-1 text-sm font-medium text-brand-200 hover:text-white underline-grow">访问 Demo →</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- Integration band -->
+    <section class="mt-16 card glow-ring rounded-2xl p-8 text-center">
+      <h2 class="text-xl font-bold text-white">四款工具，一条跨境链路</h2>
+      <p class="mt-2 text-slate-300 max-w-2xl mx-auto">
+        GEO PRO 帮你被看见 → salesbuddy 把询盘接住 → PackMeta 让每一柜更省 → DocuConsist 守住清关。
+        从流量到签收，JetSocio 补齐你今天正在漏掉的每一块钱。
+      </p>
+      <div class="mt-6 flex flex-wrap justify-center gap-3 text-sm">
+        <a href="https://github.com/bluesxxx/geo-pro" target="_blank" rel="noopener"
+           class="btn-primary rounded-lg px-5 py-3 font-semibold text-white hover:opacity-90">开始自托管 GEO PRO</a>
+        <a href="#products" class="btn-ghost rounded-lg px-5 py-3 font-semibold text-white hover:bg-white/10">浏览全部产品</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/10 mt-16">
+    <div class="mx-auto max-w-6xl px-5 py-8 text-sm text-slate-500 flex flex-col sm:flex-row justify-between gap-3">
+      <span>© JetSocio · 跨境业务工具栈</span>
+      <span>GEO PRO 基于 GEOFlow 修改 · salesbuddy 基于 wacrm</span>
     </div>
-  </section>
+  </footer>
 
-  <!-- 产品卡片 -->
-  <section id="products" class="mx-auto max-w-6xl px-4 sm:px-6 pb-20">
-    <div class="mb-10 text-center">
-      <h2 class="text-3xl font-bold tracking-tight">四款工具，一个生态</h2>
-      <p class="mt-3 text-gray-600">可自托管的 GEO 内容平台 · 云端 SaaS · 本地部署工具</p>
-    </div>
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-
-      <!-- GEO PRO -->
-      <article class="flex flex-col rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 hover:shadow-md transition-shadow">
-        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-100 text-brand-700">
-          <svg class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-        </div>
-        <h3 class="mt-4 text-lg font-semibold">GEO PRO</h3>
-        <p class="mt-1 text-sm text-gray-500 leading-relaxed flex-1">GEO 内容平台：AI 内容生成、知识库、AI 可见性观测、多渠道分发，含真后端网站体检。自托管，数据全在自己服务器。</p>
-        <div class="mt-4 flex flex-wrap gap-1.5">
-          <span class="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-600">Laravel</span>
-          <span class="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-600">Apache-2.0</span>
-        </div>
-        <a href="#audit-form" onclick="document.getElementById('audit-url').focus();return true"
-           class="mt-4 inline-flex h-10 items-center justify-center rounded-lg bg-brand-700 px-4 text-sm font-semibold text-white hover:bg-brand-800">立即体检</a>
-        <a href="/deploy.html#geo-pro" class="mt-2 inline-flex h-10 items-center justify-center rounded-lg border border-gray-200 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50">本地部署</a>
-      </article>
-
-      <!-- salesbuddy -->
-      <article class="flex flex-col rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 hover:shadow-md transition-shadow">
-        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
-          <svg class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-        </div>
-        <h3 class="mt-4 text-lg font-semibold">salesbuddy</h3>
-        <p class="mt-1 text-sm text-gray-500 leading-relaxed flex-1">自托管 WhatsApp CRM：共享收件箱、联系人、销售管道、群发与无代码自动化（wacrm 分支，MIT 许可）。</p>
-        <div class="mt-4 flex flex-wrap gap-1.5">
-          <span class="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-600">Next.js</span>
-          <span class="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-600">Supabase</span>
-          <span class="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-600">MIT</span>
-        </div>
-        <a href="https://github.com/wacrm/wacrm" target="_blank" rel="noopener noreferrer"
-           class="mt-4 inline-flex h-10 items-center justify-center rounded-lg border border-gray-200 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50">GitHub（上游 wacrm）</a>
-      </article>
-
-      <!-- PackMeta -->
-      <article class="flex flex-col rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 hover:shadow-md transition-shadow">
-        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-100 text-violet-700">
-          <svg class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-        </div>
-        <h3 class="mt-4 text-lg font-semibold">PackMeta</h3>
-        <p class="mt-1 text-sm text-gray-500 leading-relaxed flex-1">3D 装箱优化：上传装箱单，秒级生成 3D 装柜方案，空间利用率 +20%，IMDG 危险品隔离 / LIFO / 承重校验，6 大行业模板。</p>
-        <div class="mt-4 flex flex-wrap gap-1.5">
-          <span class="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-600">Cloudflare</span>
-          <span class="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-600">免费试用</span>
-        </div>
-        <a href="https://packmeta.pages.dev/" target="_blank" rel="noopener noreferrer"
-           class="mt-4 inline-flex h-10 items-center justify-center rounded-lg bg-violet-600 px-4 text-sm font-semibold text-white hover:bg-violet-700">访问线上 Demo</a>
-      </article>
-
-      <!-- DocuConsist -->
-      <article class="flex flex-col rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 hover:shadow-md transition-shadow">
-        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
-          <svg class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        </div>
-        <h3 class="mt-4 text-lg font-semibold">DocuConsist</h3>
-        <p class="mt-1 text-sm text-gray-500 leading-relaxed flex-1">外贸单证一致核验：六类单据跨单比对 + FOB 责任核对，规则引擎可溯源、误报率 &lt;5%，附运费单核验与 OFAC 筛查。</p>
-        <div class="mt-4 flex flex-wrap gap-1.5">
-          <span class="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-600">Cloudflare</span>
-          <span class="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-600">免费 · 免登录</span>
-        </div>
-        <a href="https://docuconsist.com/" target="_blank" rel="noopener noreferrer"
-           class="mt-4 inline-flex h-10 items-center justify-center rounded-lg bg-amber-600 px-4 text-sm font-semibold text-white hover:bg-amber-700">访问线上 Demo</a>
-      </article>
-
-    </div>
-  </section>
-</main>
-
-<footer class="border-t border-gray-100 py-10">
-  <div class="mx-auto max-w-6xl px-4 sm:px-6 text-center text-sm text-gray-400">
-    <p>© 2026 JetSocio · 四款工具，一个生态</p>
-    <p class="mt-2">GEO PRO 基于 GEOFlow（Apache-2.0）品牌化改造 · salesbuddy 基于 wacrm（MIT）</p>
-  </div>
-</footer>
-
-<script src="assets/report.js"></script>
+  <script src="assets/report.js"></script>
 </body>
 </html>
