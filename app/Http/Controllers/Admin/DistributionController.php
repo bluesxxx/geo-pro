@@ -12,7 +12,6 @@ use App\Models\ArticleDistribution;
 use App\Models\DistributionChannel;
 use App\Models\DistributionChannelSecret;
 use App\Models\DistributionLog;
-use App\Models\LeadForm;
 use App\Services\GeoFlow\DistributionChannelDeletionConfirmation;
 use App\Services\GeoFlow\DistributionChannelDeletionService;
 use App\Services\GeoFlow\DistributionChannelOperationLeaseService;
@@ -69,20 +68,10 @@ class DistributionController extends Controller
             'failed' => ArticleDistribution::query()->where('status', 'failed')->count(),
         ];
 
-        $defaultSiteFormStats = Schema::hasTable('lead_forms')
-            ? LeadForm::query()
-                ->selectRaw(
-                    'COUNT(*) as total, SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as active',
-                    [LeadForm::STATUS_ACTIVE]
-                )
-                ->first()
-            : null;
         $defaultSite = [
-            'name' => SiteSettingsBag::get('site_name', (string) config('geoflow.site_name', 'GEOFlow')),
+            'name' => SiteSettingsBag::get('site_name', (string) config('geoflow.site_name', 'GEO PRO')),
             'url' => route('site.home'),
             'published_articles' => Article::query()->published()->count(),
-            'forms_total' => (int) ($defaultSiteFormStats?->total ?? 0),
-            'forms_active' => (int) ($defaultSiteFormStats?->active ?? 0),
         ];
 
         $logsQuery = DistributionLog::query()

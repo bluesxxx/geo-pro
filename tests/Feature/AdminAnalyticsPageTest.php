@@ -55,16 +55,13 @@ class AdminAnalyticsPageTest extends TestCase
         );
     }
 
-    public function test_analytics_page_renders_before_lead_tables_are_migrated(): void
+    public function test_analytics_page_renders_overview_with_default_alert(): void
     {
-        Schema::dropIfExists('lead_submissions');
-        Schema::dropIfExists('lead_forms');
-
         $this->actingAs($this->admin(), 'admin')
             ->get(route('admin.analytics'))
             ->assertOk()
             ->assertSee(__('admin.analytics.overview.title'))
-            ->assertSee(__('admin.analytics.overview.alerts.no_forms.title'));
+            ->assertSee(__('admin.analytics.overview.alerts.ai_unconfigured.title'));
     }
 
     public function test_regular_admin_sees_business_reports_without_distribution_report(): void
@@ -73,7 +70,7 @@ class AdminAnalyticsPageTest extends TestCase
             ->get(route('admin.analytics'))
             ->assertOk()
             ->assertSee(route('admin.analytics.content'), false)
-            ->assertSee(route('admin.analytics.leads'), false)
+            ->assertDontSee(route('admin.analytics.leads'), false)
             ->assertDontSee(route('admin.analytics.distribution'), false);
     }
 

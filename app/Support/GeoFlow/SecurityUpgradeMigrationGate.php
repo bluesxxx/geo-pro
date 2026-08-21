@@ -75,8 +75,6 @@ final class SecurityUpgradeMigrationGate
             'enterprise_knowledge_projects',
             'enterprise_knowledge_sources',
             'enterprise_knowledge_revisions',
-            'lead_forms',
-            'lead_submissions',
             'site_theme_replications',
             'site_theme_replication_versions',
             'site_theme_replication_logs',

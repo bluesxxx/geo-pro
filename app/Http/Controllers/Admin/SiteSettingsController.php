@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\LeadForm;
 use App\Models\SiteSetting;
 use App\Services\Admin\SiteThemeReplicationService;
 use App\Support\AdminBasePathManager;
@@ -79,7 +78,6 @@ class SiteSettingsController extends Controller
             'homepageModuleTypes' => HomepageModuleBuilder::TYPES,
             'homepageModuleLayouts' => HomepageModuleBuilder::LAYOUTS,
             'homepageArticleSources' => HomepageModuleBuilder::ARTICLE_SOURCES,
-            'leadForms' => $this->activeLeadForms(),
             'homepageContainerWidths' => HomepageModuleBuilder::CONTAINER_WIDTHS,
             'homepageSpacings' => HomepageModuleBuilder::SPACINGS,
             'homepageRadii' => HomepageModuleBuilder::RADII,
@@ -87,18 +85,6 @@ class SiteSettingsController extends Controller
             'homepagePresets' => HomepageModuleBuilder::presetIds(),
             'homepagePresetModes' => HomepageModuleBuilder::presetModes(),
         ]);
-    }
-
-    private function activeLeadForms()
-    {
-        if (! Schema::hasTable('lead_forms')) {
-            return collect();
-        }
-
-        return LeadForm::query()
-            ->where('status', LeadForm::STATUS_ACTIVE)
-            ->orderBy('name')
-            ->get(['id', 'name', 'slug']);
     }
 
     /**

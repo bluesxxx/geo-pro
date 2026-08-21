@@ -15,7 +15,6 @@ use App\Models\DistributionChannelSecret;
 use App\Models\DistributionLog;
 use App\Models\Image;
 use App\Models\ImageLibrary;
-use App\Models\LeadForm;
 use App\Models\Prompt;
 use App\Models\SiteSetting;
 use App\Models\Task;
@@ -49,13 +48,7 @@ class AdminDistributionPageTest extends TestCase
     {
         SiteSetting::query()->create([
             'setting_key' => 'site_name',
-            'setting_value' => 'GEOFlow 默认官网',
-        ]);
-        LeadForm::query()->create([
-            'name' => '业务咨询',
-            'slug' => 'business-contact',
-            'status' => LeadForm::STATUS_ACTIVE,
-            'fields' => [],
+            'setting_value' => 'GEO PRO 默认官网',
         ]);
 
         $response = $this->actingAs($this->admin(), 'admin')
@@ -64,10 +57,8 @@ class AdminDistributionPageTest extends TestCase
             ->assertSee(__('admin.distribution.page_heading'))
             ->assertSee(__('admin.distribution.default_site.title'))
             ->assertSee(__('admin.distribution.default_site.badge'))
-            ->assertSee('GEOFlow 默认官网')
-            ->assertSee(__('admin.distribution.default_site.forms_summary', ['active' => 1, 'total' => 1]))
+            ->assertSee('GEO PRO 默认官网')
             ->assertSee(route('site.home'), false)
-            ->assertSee(route('admin.lead-forms.index'), false)
             ->assertSee(route('admin.site-settings.index'), false)
             ->assertSee(__('admin.distribution.button.sync_settings_selected'))
             ->assertSee(__('admin.distribution.button.sync_settings_all'))
@@ -85,16 +76,12 @@ class AdminDistributionPageTest extends TestCase
         );
     }
 
-    public function test_distribution_index_renders_default_site_before_lead_forms_are_migrated(): void
+    public function test_distribution_index_renders_default_site_section(): void
     {
-        Schema::dropIfExists('lead_submissions');
-        Schema::dropIfExists('lead_forms');
-
         $this->actingAs($this->admin(), 'admin')
             ->get(route('admin.distribution.index'))
             ->assertOk()
-            ->assertSee(__('admin.distribution.default_site.title'))
-            ->assertSee(__('admin.distribution.default_site.forms_summary', ['active' => 0, 'total' => 0]));
+            ->assertSee(__('admin.distribution.default_site.title'));
     }
 
     public function test_distribution_index_selected_sync_modal_shows_frontend_sync_summary(): void

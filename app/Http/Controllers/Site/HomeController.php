@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Category;
-use App\Models\LeadForm;
 use App\Support\Site\ArticleHtmlPresenter;
 use App\Support\Site\HomepageModuleBuilder;
 use App\Support\Site\SiteSettingsBag;
@@ -36,13 +35,7 @@ class HomeController extends Controller
         $homepageCarouselSlides = $this->parseHomepageCarouselSlides((string) ($map['home_carousel_slides'] ?? '[]'));
         $homepageModules = HomepageModuleBuilder::fromRaw((string) ($map['homepage_modules'] ?? '[]'));
         $homepageStyle = HomepageModuleBuilder::styleFromRaw((string) ($map['homepage_style'] ?? '{}'));
-        $leadForms = Schema::hasTable('lead_forms')
-            ? LeadForm::query()
-                ->where('status', LeadForm::STATUS_ACTIVE)
-                ->orderBy('name')
-                ->get()
-                ->keyBy('slug')
-            : collect();
+        $leadForms = collect(); // 线索功能已移除，保持视图契约
 
         $category = null;
         $categoryMissing = false;

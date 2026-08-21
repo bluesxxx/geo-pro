@@ -15,7 +15,6 @@ final class HomepageModuleBuilder
         'feature_grid',
         'article_collection',
         'cta_band',
-        'lead_form',
         'custom_html',
     ];
 
@@ -453,13 +452,12 @@ final class HomepageModuleBuilder
             $imageUrl = self::normalizeUrl((string) ($item['image_url'] ?? ''), allowRelative: true);
             $linkText = self::limitText(trim((string) ($item['link_text'] ?? '')), 80);
             $linkUrl = self::normalizeUrl((string) ($item['link_url'] ?? ''), allowRelative: true);
-            $leadFormSlug = self::normalizeSlug((string) ($item['lead_form_slug'] ?? ''));
             $accentColor = self::normalizeHexColor((string) ($item['accent_color'] ?? ''));
             $surfaceColor = self::normalizeHexColor((string) ($item['surface_color'] ?? ''));
             $textColor = self::normalizeHexColor((string) ($item['text_color'] ?? ''));
             $mutedColor = self::normalizeHexColor((string) ($item['muted_color'] ?? ''));
 
-            if ($title === '' && $subtitle === '' && $body === '' && $customHtml === '' && $imageUrl === '' && $linkText === '' && $linkUrl === '' && $leadFormSlug === '') {
+            if ($title === '' && $subtitle === '' && $body === '' && $customHtml === '' && $imageUrl === '' && $linkText === '' && $linkUrl === '') {
                 continue;
             }
 
@@ -511,7 +509,6 @@ final class HomepageModuleBuilder
                 'image_url' => $imageUrl,
                 'link_text' => $linkText,
                 'link_url' => $linkUrl,
-                'lead_form_slug' => $leadFormSlug,
                 'limit' => max(1, min(12, (int) $limit)),
                 'custom_html' => $customHtml,
                 'accent_color' => $accentColor,
@@ -582,7 +579,6 @@ final class HomepageModuleBuilder
             'image_url' => ['image', 'imageUrl', 'media_url', 'media', 'cover', 'cover_url'],
             'link_text' => ['cta_label', 'button_text', 'linkLabel', 'action_text'],
             'link_url' => ['cta_url', 'button_url', 'url', 'href', 'action_url'],
-            'lead_form_slug' => ['form_slug', 'lead_form', 'form', 'conversion_form'],
             'limit' => ['count', 'article_limit', 'items'],
             'sort_order' => ['order', 'position', 'sort'],
             'custom_html' => ['html', 'markup'],
@@ -615,7 +611,7 @@ final class HomepageModuleBuilder
             $mapped['enabled'] = true;
         }
 
-        foreach (['title', 'subtitle', 'body', 'image_url', 'link_text', 'link_url', 'lead_form_slug', 'custom_html', 'accent_color', 'surface_color', 'text_color', 'muted_color', 'alignment'] as $textField) {
+        foreach (['title', 'subtitle', 'body', 'image_url', 'link_text', 'link_url', 'custom_html', 'accent_color', 'surface_color', 'text_color', 'muted_color', 'alignment'] as $textField) {
             if (array_key_exists($textField, $mapped) && is_array($mapped[$textField])) {
                 $mapped[$textField] = self::stringifyDesignValue($mapped[$textField]);
             }
@@ -667,7 +663,6 @@ final class HomepageModuleBuilder
             'feature', 'features', 'cards', 'feature_cards' => 'feature_grid',
             'article', 'articles', 'post_list', 'feed', 'collection', 'article_list' => 'article_collection',
             'cta', 'call_to_action', 'conversion' => 'cta_band',
-            'form', 'lead', 'lead_form', 'conversion_form', 'contact_form' => 'lead_form',
             'html', 'custom', 'raw_html' => 'custom_html',
             default => $normalized,
         };

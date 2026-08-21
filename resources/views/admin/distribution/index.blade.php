@@ -172,10 +172,6 @@
                         <i data-lucide="external-link" class="mr-2 h-4 w-4"></i>
                         {{ __('admin.distribution.default_site.open_site') }}
                     </a>
-                    <a href="{{ route('admin.lead-forms.index') }}" class="inline-flex min-h-10 items-center rounded-md border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
-                        <i data-lucide="clipboard-list" class="mr-2 h-4 w-4"></i>
-                        {{ __('admin.distribution.default_site.manage_forms') }}
-                    </a>
                     <a href="{{ route('admin.site-settings.index') }}" class="inline-flex min-h-10 items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
                         <i data-lucide="settings-2" class="mr-2 h-4 w-4"></i>
                         {{ __('admin.distribution.default_site.site_settings') }}
@@ -193,15 +189,10 @@
                 </div>
                 <div class="flex items-center justify-between gap-4 px-6 py-4">
                     <div>
-                        <div class="text-sm text-gray-500">{{ __('admin.distribution.default_site.forms') }}</div>
-                        <div class="mt-1 text-2xl font-semibold tabular-nums text-gray-900">
-                            {{ __('admin.distribution.default_site.forms_summary', [
-                                'active' => (int) $defaultSite['forms_active'],
-                                'total' => (int) $defaultSite['forms_total'],
-                            ]) }}
-                        </div>
+                        <div class="text-sm text-gray-500">{{ __('admin.distribution.channels_title') }}</div>
+                        <div class="mt-1 text-2xl font-semibold tabular-nums text-gray-900">{{ (int) $stats['total'] }}</div>
                     </div>
-                    <i data-lucide="list-checks" class="h-6 w-6 text-gray-400"></i>
+                    <i data-lucide="radio-tower" class="h-6 w-6 text-gray-400"></i>
                 </div>
             </div>
         </section>

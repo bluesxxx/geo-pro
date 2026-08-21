@@ -4,7 +4,6 @@
         ['key' => 'content', 'route' => 'admin.analytics.content', 'tone' => 'bg-emerald-500'],
         ['key' => 'traffic', 'route' => 'admin.analytics.traffic', 'tone' => 'bg-cyan-500'],
         ['key' => 'ai_visibility', 'route' => 'admin.analytics.ai-visibility', 'tone' => 'bg-violet-500'],
-        ['key' => 'leads', 'route' => 'admin.analytics.leads', 'tone' => 'bg-amber-500'],
     ];
     if (auth('admin')->user()?->canManageProtectedWorkflows()) {
         $analyticsNavigation[] = ['key' => 'distribution', 'route' => 'admin.analytics.distribution', 'tone' => 'bg-slate-600'];

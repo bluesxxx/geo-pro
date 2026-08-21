@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\Article;
 use App\Models\Author;
 use App\Models\Category;
-use App\Models\LeadForm;
 use App\Models\SiteSetting;
 use App\Support\Site\SiteSettingsBag;
 use App\Support\Site\SiteThemeCatalog;
@@ -24,7 +23,7 @@ class EnterpriseSignatureThemeTest extends TestCase
             ->firstWhere('id', self::THEME_ID);
 
         $this->assertIsArray($theme);
-        $this->assertSame('GEOFlow 21 Enterprise Signature', $theme['name']);
+        $this->assertSame('GEO PRO 21 Enterprise Signature', $theme['name']);
         $this->assertFileExists(resource_path('views/theme/'.self::THEME_ID.'/layout.blade.php'));
         $this->assertFileExists(public_path('themes/'.self::THEME_ID.'/theme.css'));
 
@@ -95,57 +94,14 @@ class EnterpriseSignatureThemeTest extends TestCase
         $this->get(route('site.home'))
             ->assertOk()
             ->assertSee('themes/'.self::THEME_ID.'/theme.css', false)
-            ->assertSee('GEOFlow Control Plane')
+            ->assertSee('GEO PRO Control Plane')
             ->assertSee('让全球知识')
             ->assertSee('成为')
             ->assertSee('可信答案')
             ->assertSee('客户、案例、覆盖与指标均为演示信息')
-            ->assertSee('演示表单 · 当前未连接数据提交')
-            ->assertSee('演示状态不会发送或保存任何信息')
+            ->assertSee('本地部署，掌握完整能力')
+            ->assertSee('一键 Docker 部署')
             ->assertSee('data-ent-tabs', false);
-    }
-
-    public function test_homepage_uses_an_active_backend_lead_form(): void
-    {
-        $this->activateTheme();
-
-        $leadForm = LeadForm::query()->create([
-            'name' => '企业 GEO 交流',
-            'slug' => 'enterprise-geo',
-            'status' => LeadForm::STATUS_ACTIVE,
-            'description' => '提交企业 GEO 需求。',
-            'submit_button_label' => '提交需求',
-            'success_message' => '已收到。',
-            'fields' => [
-                [
-                    'name' => 'work_email',
-                    'label' => '工作邮箱',
-                    'type' => 'email',
-                    'required' => true,
-                    'options' => [],
-                ],
-            ],
-        ]);
-        $this->selectHomepageLeadForm($leadForm->slug);
-
-        $response = $this->get(route('site.home'))
-            ->assertOk()
-            ->assertSee('已连接后台表单')
-            ->assertSee('提交内容会安全进入 GEOFlow 增长中心。')
-            ->assertSee(
-                'action="'.route('site.lead-forms.submit', ['slug' => $leadForm->slug]).'"',
-                false
-            )
-            ->assertSee('name="work_email"', false)
-            ->assertDontSee('演示状态不会发送或保存任何信息');
-
-        $this->assertSame(
-            1,
-            substr_count(
-                (string) $response->getContent(),
-                'action="'.route('site.lead-forms.submit', ['slug' => $leadForm->slug]).'"'
-            )
-        );
     }
 
     public function test_search_state_stays_focused_on_results(): void
@@ -159,59 +115,6 @@ class EnterpriseSignatureThemeTest extends TestCase
             ->assertSee('Search results')
             ->assertDontSee('GEOFlow Control Plane')
             ->assertDontSee('NORTHSTAR INDUSTRIAL');
-    }
-
-    public function test_homepage_uses_only_the_explicitly_selected_form(): void
-    {
-        $this->activateTheme();
-
-        foreach (['enterprise-sales', 'event-registration'] as $slug) {
-            LeadForm::query()->create([
-                'name' => $slug,
-                'slug' => $slug,
-                'status' => LeadForm::STATUS_ACTIVE,
-                'description' => '',
-                'submit_button_label' => '提交',
-                'success_message' => '已收到。',
-                'fields' => [],
-            ]);
-        }
-        $this->selectHomepageLeadForm('event-registration');
-
-        $response = $this->get(route('site.home'))
-            ->assertOk()
-            ->assertDontSee('action="'.route('site.lead-forms.submit', ['slug' => 'enterprise-sales']).'"', false)
-            ->assertSee('action="'.route('site.lead-forms.submit', ['slug' => 'event-registration']).'"', false);
-
-        $this->assertSame(
-            1,
-            substr_count(
-                (string) $response->getContent(),
-                'action="'.route('site.lead-forms.submit', ['slug' => 'event-registration']).'"'
-            )
-        );
-    }
-
-    public function test_an_active_form_without_homepage_selection_stays_in_demo_mode(): void
-    {
-        $this->activateTheme();
-
-        LeadForm::query()->create([
-            'name' => '企业 GEO 交流',
-            'slug' => 'enterprise-geo',
-            'status' => LeadForm::STATUS_ACTIVE,
-            'description' => '',
-            'submit_button_label' => '提交',
-            'success_message' => '已收到。',
-            'fields' => [],
-        ]);
-
-        $this->get(route('site.home'))
-            ->assertOk()
-            ->assertSee('演示表单 · 请在首页模块指定表单')
-            ->assertSee('请在后台首页模块中添加线索表单模块')
-            ->assertSee('在后台启用并指定表单后，提交内容会进入 GEOFlow 增长中心。')
-            ->assertDontSee('action="'.route('site.lead-forms.submit', ['slug' => 'enterprise-geo']).'"', false);
     }
 
     public function test_category_article_about_and_archive_pages_render_with_the_theme(): void
@@ -243,16 +146,16 @@ class EnterpriseSignatureThemeTest extends TestCase
 
         $this->get(route('site.about'))
             ->assertOk()
-            ->assertSee('关于 GEOFlow')
+            ->assertSee('关于 GEO PRO')
             ->assertSee('让可信知识进入 AI 答案')
             ->assertSee('一条完整的内容工作流')
-            ->assertSee('GEOFlow 包含的核心能力')
+            ->assertSee('GEO PRO 包含的核心能力')
             ->assertSee('开放、可部署的技术基础')
             ->assertSee('从开源仓库开始')
             ->assertSee('data-ent-article-toc', false)
             ->assertSee('data-ent-article-content', false)
             ->assertSee('AboutPage')
-            ->assertSee('https://github.com/yaojingang/GEOFlow');
+            ->assertSee('https://github.com/bluesxxx/geo-pro');
 
         $this->get(route('site.archive'))
             ->assertOk()
@@ -278,9 +181,9 @@ class EnterpriseSignatureThemeTest extends TestCase
         $this->get(route('site.about'))
             ->assertOk()
             ->assertSee('article-detail-shell', false)
-            ->assertSee('关于 GEOFlow')
+            ->assertSee('关于 GEO PRO')
             ->assertSee('一条完整的内容工作流')
-            ->assertSee('https://github.com/yaojingang/GEOFlow');
+            ->assertSee('https://github.com/bluesxxx/geo-pro');
     }
 
     public function test_article_related_heading_and_footer_use_the_compact_copy(): void
@@ -370,25 +273,6 @@ class EnterpriseSignatureThemeTest extends TestCase
         SiteSettingsBag::forget();
     }
 
-    private function selectHomepageLeadForm(string $slug): void
-    {
-        SiteSetting::query()->updateOrCreate(
-            ['setting_key' => 'homepage_modules'],
-            ['setting_value' => json_encode([[
-                'id' => 'enterprise-contact',
-                'type' => 'lead_form',
-                'layout' => 'single',
-                'enabled' => true,
-                'sort_order' => 10,
-                'title' => '预约企业 GEO 方案交流',
-                'body' => '提交后将进入后台线索管理。',
-                'lead_form_slug' => $slug,
-            ]], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)],
-        );
-
-        SiteSettingsBag::forget();
-    }
-
     private function createPublishedArticle(): Article
     {
         $category = Category::query()->create([
@@ -397,7 +281,7 @@ class EnterpriseSignatureThemeTest extends TestCase
             'description' => 'Enterprise GEO knowledge and practice.',
         ]);
         $author = Author::query()->create([
-            'name' => 'GEOFlow Research',
+            'name' => 'GEO PRO Research',
         ]);
 
         return Article::query()->create([

@@ -40,11 +40,8 @@ MD);
         $this->assertStringContainsString('type="checkbox"', $html);
     }
 
-    public function test_homepage_renders_before_lead_forms_table_is_migrated(): void
+    public function test_homepage_renders_latest_articles(): void
     {
-        Schema::dropIfExists('lead_submissions');
-        Schema::dropIfExists('lead_forms');
-
         $this->get(route('site.home'))
             ->assertOk()
             ->assertSee(__('site.home_latest'));

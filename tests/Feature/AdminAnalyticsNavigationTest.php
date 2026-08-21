@@ -3,8 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\Admin;
-use App\Models\LeadForm;
-use App\Models\LeadSubmission;
 use App\Models\Task;
 use App\Models\TaskRun;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,7 +15,7 @@ class AdminAnalyticsNavigationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_growth_center_exposes_overview_and_five_topic_pages(): void
+    public function test_growth_center_exposes_overview_and_topic_pages(): void
     {
         $admin = $this->admin();
 
@@ -29,37 +27,24 @@ class AdminAnalyticsNavigationTest extends TestCase
             ->assertSee(route('admin.analytics.content'), false)
             ->assertSee(route('admin.analytics.traffic'), false)
             ->assertSee(route('admin.analytics.ai-visibility'), false)
-            ->assertSee(route('admin.analytics.leads'), false)
+            ->assertDontSee(route('admin.analytics.leads'), false)
             ->assertSee(route('admin.analytics.distribution'), false)
             ->assertDontSee('data-analytics-log-chart', false)
             ->assertDontSee('data-ai-visibility-series', false)
             ->assertDontSee('data-analytics-health-grid', false);
 
-        $this->assertSame(4, substr_count($response->getContent(), 'lg:col-span-6'));
+        $this->assertSame(3, substr_count($response->getContent(), 'lg:col-span-6'));
         $this->assertStringNotContainsString('lg:col-span-5', $response->getContent());
         $this->assertStringNotContainsString('lg:col-span-7', $response->getContent());
 
-        foreach (['content', 'traffic', 'ai-visibility', 'leads', 'distribution'] as $page) {
+        foreach (['content', 'traffic', 'ai-visibility', 'distribution'] as $page) {
             $this->get(route("admin.analytics.{$page}"))->assertOk();
         }
     }
 
-    public function test_overview_shows_five_core_metrics_and_only_the_highest_priority_alert(): void
+    public function test_overview_shows_core_metrics_and_only_the_highest_priority_alert(): void
     {
         Carbon::setTestNow('2026-08-02 12:00:00');
-        $form = LeadForm::query()->create([
-            'name' => '咨询表单',
-            'slug' => 'analytics-contact',
-            'status' => LeadForm::STATUS_ACTIVE,
-            'fields' => [],
-        ]);
-        LeadSubmission::query()->create([
-            'lead_form_id' => $form->id,
-            'status' => LeadSubmission::STATUS_NEW,
-            'payload' => ['name' => '测试访客'],
-            'source_url' => '/',
-            'ip_address' => '10.0.0.1',
-        ]);
         DB::table('view_logs')->insert([
             'source' => 'local',
             'method' => 'GET',
@@ -78,10 +63,7 @@ class AdminAnalyticsNavigationTest extends TestCase
             ->assertSee(__('admin.analytics.overview.metrics.today_visits'))
             ->assertSee(__('admin.analytics.overview.metrics.published_7d'))
             ->assertSee(__('admin.analytics.overview.metrics.brand_visibility_60d'))
-            ->assertSee(__('admin.analytics.overview.metrics.new_leads'))
-            ->assertSee(__('admin.analytics.overview.metrics.pending_followups'))
-            ->assertSee(__('admin.analytics.overview.alerts.new_leads.title', ['count' => 1]))
-            ->assertDontSee(__('admin.analytics.overview.alerts.ai_unconfigured.title'));
+            ->assertSee(__('admin.analytics.overview.alerts.ai_unconfigured.title'));
 
         $this->assertSame(1, substr_count($response->getContent(), 'data-analytics-priority-alert'));
     }
@@ -110,7 +92,7 @@ class AdminAnalyticsNavigationTest extends TestCase
             ->assertOk()
             ->assertDontSee(route('admin.analytics.distribution'), false);
 
-        foreach (['content', 'traffic', 'ai-visibility', 'leads'] as $page) {
+        foreach (['content', 'traffic', 'ai-visibility'] as $page) {
             $this->get(route("admin.analytics.{$page}"))->assertOk();
         }
 
@@ -165,45 +147,9 @@ class AdminAnalyticsNavigationTest extends TestCase
 
     public function test_growth_reports_require_admin_authentication(): void
     {
-        foreach (['admin.analytics', 'admin.analytics.content', 'admin.analytics.traffic', 'admin.analytics.ai-visibility', 'admin.analytics.leads', 'admin.analytics.distribution'] as $routeName) {
+        foreach (['admin.analytics', 'admin.analytics.content', 'admin.analytics.traffic', 'admin.analytics.ai-visibility', 'admin.analytics.distribution'] as $routeName) {
             $this->get(route($routeName))->assertRedirect(route('admin.login'));
         }
-    }
-
-    public function test_lead_report_has_a_safe_empty_state_before_lead_tables_are_migrated(): void
-    {
-        Schema::dropIfExists('lead_submissions');
-        Schema::dropIfExists('lead_forms');
-
-        $this->actingAs($this->admin(), 'admin')
-            ->get(route('admin.analytics.leads'))
-            ->assertOk()
-            ->assertSee(__('admin.analytics.no_data'));
-    }
-
-    public function test_lead_report_handles_a_missing_forms_table_with_existing_submissions(): void
-    {
-        $form = LeadForm::query()->create([
-            'name' => '待迁移表单',
-            'slug' => 'partially-migrated-form',
-            'status' => LeadForm::STATUS_ACTIVE,
-            'fields' => [],
-        ]);
-        LeadSubmission::query()->create([
-            'lead_form_id' => $form->id,
-            'status' => LeadSubmission::STATUS_NEW,
-            'payload' => ['name' => '迁移期访客'],
-            'source_url' => '/',
-            'ip_address' => '10.0.0.2',
-        ]);
-        Schema::disableForeignKeyConstraints();
-        Schema::dropIfExists('lead_forms');
-        Schema::enableForeignKeyConstraints();
-
-        $this->actingAs($this->admin(), 'admin')
-            ->get(route('admin.analytics.leads'))
-            ->assertOk()
-            ->assertSee(__('admin.leads.deleted_form'));
     }
 
     public function test_distribution_report_has_a_safe_empty_state_when_a_dependency_table_is_missing(): void
@@ -218,15 +164,9 @@ class AdminAnalyticsNavigationTest extends TestCase
             ->assertSee(__('admin.analytics.no_data'));
     }
 
-    public function test_old_task_failures_do_not_replace_the_current_overview_alert(): void
+    public function test_old_task_failures_trigger_the_content_failed_alert(): void
     {
         Carbon::setTestNow('2026-08-02 12:00:00');
-        LeadForm::query()->create([
-            'name' => '启用表单',
-            'slug' => 'active-overview-form',
-            'status' => LeadForm::STATUS_ACTIVE,
-            'fields' => [],
-        ]);
         $task = Task::query()->create(['name' => '历史任务', 'status' => 'active']);
         $run = TaskRun::query()->create([
             'task_id' => $task->id,
@@ -238,8 +178,7 @@ class AdminAnalyticsNavigationTest extends TestCase
         $this->actingAs($this->admin(), 'admin')
             ->get(route('admin.analytics'))
             ->assertOk()
-            ->assertDontSee(__('admin.analytics.overview.alerts.content_failed.title', ['count' => 1]))
-            ->assertSee(__('admin.analytics.overview.alerts.ai_unconfigured.title'));
+            ->assertSee(__('admin.analytics.overview.alerts.content_failed.title', ['count' => 1]));
     }
 
     private function admin(string $role = 'super_admin'): Admin

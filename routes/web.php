@@ -28,9 +28,6 @@ use App\Http\Controllers\Admin\EnterpriseKnowledgeController;
 use App\Http\Controllers\Admin\ImageLibraryController;
 use App\Http\Controllers\Admin\KeywordLibraryController;
 use App\Http\Controllers\Admin\KnowledgeBaseController;
-use App\Http\Controllers\Admin\LeadAnalyticsController;
-use App\Http\Controllers\Admin\LeadController;
-use App\Http\Controllers\Admin\LeadFormController;
 use App\Http\Controllers\Admin\LegacyController;
 use App\Http\Controllers\Admin\ManualPublicationController;
 use App\Http\Controllers\Admin\ManualPublicationSettingsController;
@@ -48,7 +45,6 @@ use App\Http\Controllers\Site\ArchiveController;
 use App\Http\Controllers\Site\ArticleController as SiteArticleController;
 use App\Http\Controllers\Site\CategoryController as SiteCategoryController;
 use App\Http\Controllers\Site\HomeController;
-use App\Http\Controllers\Site\LeadFormController as SiteLeadFormController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -61,10 +57,6 @@ Route::middleware(['site.locale', 'site.view_log'])->group(function (): void {
         ->where(['year' => '[0-9]{4}', 'month' => '[0-9]{2}']);
     Route::get('/category/{slug}', [SiteCategoryController::class, 'show'])->name('site.category');
     Route::get('/article/{slug}', [SiteArticleController::class, 'show'])->name('site.article');
-    Route::get('/forms/{slug}', [SiteLeadFormController::class, 'show'])->name('site.lead-forms.show');
-    Route::post('/forms/{slug}/submissions', [SiteLeadFormController::class, 'submit'])
-        ->middleware('throttle:10,1')
-        ->name('site.lead-forms.submit');
 });
 
 $adminPrefix = trim((string) config('geoflow.admin_base_path', '/geo_admin'), '/');
@@ -98,7 +90,6 @@ Route::prefix($adminPrefix)->name('admin.')->middleware(['admin.locale'])->group
             Route::get('content', ContentAnalyticsController::class)->name('content');
             Route::get('traffic', TrafficAnalyticsController::class)->name('traffic');
             Route::get('ai-visibility', AiVisibilityAnalyticsController::class)->name('ai-visibility');
-            Route::get('leads', LeadAnalyticsController::class)->name('leads');
             Route::get('distribution', DistributionAnalyticsController::class)
                 ->middleware('admin.super')
                 ->name('distribution');
@@ -120,22 +111,6 @@ Route::prefix($adminPrefix)->name('admin.')->middleware(['admin.locale'])->group
             Route::get('backups/{backupUuid}', [SystemUpdateController::class, 'backupShow'])->name('backups.show');
             Route::post('backups/{backupUuid}/files/rollback', [SystemUpdateController::class, 'rollbackFile'])->name('rollback-file');
             Route::post('backups/{backupUuid}/rollback', [SystemUpdateController::class, 'rollback'])->name('rollback');
-        });
-
-        Route::prefix('lead-forms')->name('lead-forms.')->group(function () {
-            Route::get('/', [LeadFormController::class, 'index'])->name('index');
-            Route::get('create', [LeadFormController::class, 'create'])->name('create');
-            Route::post('/', [LeadFormController::class, 'store'])->name('store');
-            Route::get('{formId}/edit', [LeadFormController::class, 'edit'])->name('edit')->whereNumber('formId');
-            Route::put('{formId}', [LeadFormController::class, 'update'])->name('update')->whereNumber('formId');
-            Route::post('{formId}/toggle-status', [LeadFormController::class, 'toggleStatus'])->name('toggle-status')->whereNumber('formId');
-            Route::post('{formId}/delete', [LeadFormController::class, 'destroy'])->name('delete')->whereNumber('formId');
-        });
-        Route::prefix('leads')->name('leads.')->group(function () {
-            Route::get('/', [LeadController::class, 'index'])->name('index');
-            Route::get('export', [LeadController::class, 'export'])->name('export');
-            Route::get('{submissionId}', [LeadController::class, 'show'])->name('show')->whereNumber('submissionId');
-            Route::put('{submissionId}', [LeadController::class, 'update'])->name('update')->whereNumber('submissionId');
         });
 
         // 任务管理（Blade 新路径）

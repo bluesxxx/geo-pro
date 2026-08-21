@@ -4,8 +4,6 @@ namespace App\Services\Admin\Analytics;
 
 use App\Models\Article;
 use App\Models\ArticleDistribution;
-use App\Models\LeadForm;
-use App\Models\LeadSubmission;
 use App\Models\TaskRun;
 use App\Support\Analytics\TrafficClassifier;
 use Illuminate\Support\Facades\DB;
@@ -104,29 +102,8 @@ class GrowthOverviewService
     /** @return array{new: int, new_30d: int, pending: int, converted_30d: int, submissions_30d: int, active_forms: int} */
     private function leadSnapshot(): array
     {
-        if (! Schema::hasTable('lead_submissions')) {
-            return ['new' => 0, 'new_30d' => 0, 'pending' => 0, 'converted_30d' => 0, 'submissions_30d' => 0, 'active_forms' => 0];
-        }
-
-        $start = now()->copy()->startOfDay()->subDays(29);
-        $row = LeadSubmission::query()
-            ->selectRaw('SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) AS new_count', [LeadSubmission::STATUS_NEW])
-            ->selectRaw('SUM(CASE WHEN status = ? AND created_at >= ? THEN 1 ELSE 0 END) AS new_30d', [LeadSubmission::STATUS_NEW, $start])
-            ->selectRaw('SUM(CASE WHEN status IN (?, ?) THEN 1 ELSE 0 END) AS pending_count', [LeadSubmission::STATUS_NEW, LeadSubmission::STATUS_CONTACTED])
-            ->selectRaw('SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) AS submissions_30d', [$start])
-            ->selectRaw('SUM(CASE WHEN status = ? AND created_at >= ? THEN 1 ELSE 0 END) AS converted_30d', [LeadSubmission::STATUS_CONVERTED, $start])
-            ->first();
-
-        return [
-            'new' => (int) ($row->new_count ?? 0),
-            'new_30d' => (int) ($row->new_30d ?? 0),
-            'pending' => (int) ($row->pending_count ?? 0),
-            'converted_30d' => (int) ($row->converted_30d ?? 0),
-            'submissions_30d' => (int) ($row->submissions_30d ?? 0),
-            'active_forms' => Schema::hasTable('lead_forms')
-                ? (int) LeadForm::query()->where('status', LeadForm::STATUS_ACTIVE)->count()
-                : 0,
-        ];
+        // 线索（Lead）功能已移除：保留结构以兼容历史统计视图，恒为 0。
+        return ['new' => 0, 'new_30d' => 0, 'pending' => 0, 'converted_30d' => 0, 'submissions_30d' => 0, 'active_forms' => 0];
     }
 
     /** @return array{total: int, synced: int, failed: int, pending: int} */
@@ -160,20 +137,12 @@ class GrowthOverviewService
      */
     private function alert(array $leads, array $distribution, int $failedTasks, bool $aiConfigured, bool $includeDistribution): ?array
     {
-        if ($leads['new'] > 0) {
-            return ['type' => 'new_leads', 'count' => $leads['new'], 'href' => route('admin.leads.index', ['status' => LeadSubmission::STATUS_NEW])];
-        }
-
         if ($includeDistribution && ($distribution['failed'] ?? 0) > 0) {
             return ['type' => 'distribution_failed', 'count' => $distribution['failed'], 'href' => route('admin.distribution.jobs', ['status' => 'failed'])];
         }
 
         if ($failedTasks > 0) {
             return ['type' => 'content_failed', 'count' => $failedTasks, 'href' => route('admin.analytics.content')];
-        }
-
-        if ($leads['active_forms'] === 0) {
-            return ['type' => 'no_forms', 'count' => 0, 'href' => route('admin.lead-forms.create')];
         }
 
         if (! $aiConfigured) {

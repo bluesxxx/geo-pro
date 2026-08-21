@@ -71,11 +71,8 @@ class AdminSiteSettingsPageTest extends TestCase
         $this->assertSame(1, substr_count($response->getContent(), route('admin.site-settings.homepage-modules.edit')));
     }
 
-    public function test_site_settings_page_renders_before_lead_forms_table_is_migrated(): void
+    public function test_site_settings_page_renders_homepage_module_editor(): void
     {
-        Schema::dropIfExists('lead_submissions');
-        Schema::dropIfExists('lead_forms');
-
         $admin = Admin::query()->create([
             'username' => 'site_settings_no_leads_admin',
             'password' => 'secret-123',
@@ -96,8 +93,7 @@ class AdminSiteSettingsPageTest extends TestCase
             ->assertOk()
             ->assertSee(__('admin.site_settings.homepage.page_title'))
             ->assertSee(__('admin.site_settings.homepage.back_to_settings'))
-            ->assertSee('id="homepage-module-form"', false)
-            ->assertSee(__('admin.site_settings.homepage.lead_form_none'));
+            ->assertSee('id="homepage-module-form"', false);
     }
 
     public function test_apple_support_theme_is_listed_without_becoming_active_theme(): void

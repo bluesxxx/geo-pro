@@ -54,20 +54,6 @@
             ],
             'period' => __('admin.analytics.overview.periods.60d'),
         ],
-        [
-            'key' => 'leads',
-            'route' => 'admin.analytics.leads',
-            'span' => 'lg:col-span-6',
-            'tone' => 'bg-amber-500',
-            'icon' => 'contact-round',
-            'main' => (int) ($cards['leads']['submissions_30d'] ?? 0),
-            'main_label' => __('admin.analytics.overview.cards.leads.main'),
-            'secondary' => [
-                [__('admin.analytics.overview.cards.leads.new'), (int) ($cards['leads']['new_30d'] ?? 0)],
-                [__('admin.analytics.overview.cards.leads.converted'), (int) ($cards['leads']['converted_30d'] ?? 0)],
-            ],
-            'period' => __('admin.analytics.overview.periods.30d'),
-        ],
     ];
     if ($canManageProtectedWorkflows) {
         $modules[] = [

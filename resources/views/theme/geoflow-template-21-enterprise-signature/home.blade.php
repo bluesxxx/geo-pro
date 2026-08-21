@@ -34,26 +34,7 @@
             ? $articles->getCollection()
             : collect($articles ?? []);
         $isDefaultHome = (bool) ($showHomepageModules ?? false);
-        $activeLeadForms = collect($leadForms ?? []);
-        $homepageModuleCollection = collect($homepageModules ?? []);
-        $contactLeadFormModule = $homepageModuleCollection->first(
-            fn ($module) => is_array($module)
-                && !empty($module['enabled'])
-                && ($module['type'] ?? '') === 'lead_form'
-                && trim((string) ($module['lead_form_slug'] ?? '')) !== ''
-        );
-        $contactLeadFormSlug = is_array($contactLeadFormModule)
-            ? trim((string) ($contactLeadFormModule['lead_form_slug'] ?? ''))
-            : '';
-        $primaryLeadForm = $contactLeadFormSlug !== ''
-            ? $activeLeadForms->get($contactLeadFormSlug)
-            : null;
-        $leadFormSelectionInvalid = $contactLeadFormSlug !== '' && !$primaryLeadForm;
-        $leadFormNeedsSelection = $activeLeadForms->isNotEmpty() && $contactLeadFormSlug === '';
-        $themeHomepageModules = $homepageModuleCollection
-            ->reject(fn ($module) => is_array($module) && ($module['type'] ?? '') === 'lead_form')
-            ->values()
-            ->all();
+        $themeHomepageModules = collect($homepageModules ?? [])->values()->all();
         $configuredModules = collect($themeHomepageModules)
             ->filter(fn ($module) => is_array($module) && !empty($module['enabled']));
         $featuredResources = collect($featuredArticles ?? [])->take(3);
@@ -474,75 +455,26 @@
                 <div class="ent-conversion__content ent-reveal">
                     <span class="ent-kicker">Start with one GEO challenge</span>
                     <h2 id="contact-title">定义企业的下一条 <span class="ent-no-break">GEO 增长路径</span></h2>
-                    <p>
-                        留下团队目标、市场和当前挑战。
-                        {{ $primaryLeadForm
-                            ? '提交内容会安全进入 GEO PRO 增长中心。'
-                            : '在后台启用并指定表单后，提交内容会进入 GEO PRO 增长中心。' }}
-                    </p>
+                    <p>把真实资料沉淀为可管理、可发布、可追踪的 GEO 内容资产。GEO PRO 提供内容工程、多端分发与数据复盘的一体化工作流。</p>
                     <div class="ent-contact-points">
-                        <div><span>01</span><p><strong>30 分钟需求交流</strong><small>梳理当前 GEO 场景</small></p></div>
-                        <div><span>02</span><p><strong>能力与数据映射</strong><small>识别知识、流程和通道</small></p></div>
-                        <div><span>03</span><p><strong>首阶段实施建议</strong><small>形成可执行的试点范围</small></p></div>
+                        <div><span>01</span><p><strong>内容工程</strong><small>知识库、素材与提示词沉淀</small></p></div>
+                        <div><span>02</span><p><strong>多端分发</strong><small>本站 / WordPress / 通用 API 统一发布</small></p></div>
+                        <div><span>03</span><p><strong>数据复盘</strong><small>访问日志与 AI 爬虫趋势观测</small></p></div>
                     </div>
                 </div>
                 <div class="ent-conversion__form ent-reveal" data-ent-reveal-delay="1">
-                    @if($primaryLeadForm)
-                        <div class="ent-form-status ent-form-status--live"><i></i> 已连接后台表单</div>
-                        @include('site.partials.lead-form', [
-                            'leadForm' => $primaryLeadForm,
-                            'embedded' => true,
-                            'title' => trim((string) ($contactLeadFormModule['title'] ?? '')) !== ''
-                                ? $contactLeadFormModule['title']
-                                : '预约企业 GEO 方案交流',
-                            'description' => trim((string) ($contactLeadFormModule['body'] ?? '')) !== ''
-                                ? $contactLeadFormModule['body']
-                                : '提交后将进入后台线索管理。'
-                        ])
-                    @else
-                        <div class="ent-form-status">
-                            <i></i>
-                            @if($leadFormSelectionInvalid)
-                                演示表单 · 后台指定的表单不可用
-                            @elseif($leadFormNeedsSelection)
-                                演示表单 · 请在首页模块指定表单
-                            @else
-                                演示表单 · 当前未连接数据提交
-                            @endif
+                    <div class="ent-form-status"><i></i> 自托管 · Apache-2.0</div>
+                    <div class="ent-demo-form" aria-label="GEO PRO 部署引导">
+                        <div class="ent-demo-form__heading">
+                            <h3>本地部署，掌握完整能力</h3>
+                            <p>一键 Docker 部署，数据完全自持，不向任何外部端点上报。</p>
                         </div>
-                        <div class="ent-demo-form" aria-label="企业联系演示表单">
-                            <div class="ent-demo-form__heading">
-                                <h3>预约企业 GEO 方案交流</h3>
-                                <p>
-                                    @if($leadFormSelectionInvalid)
-                                        后台首页模块指定的表单当前未启用，请检查表单状态。
-                                    @elseif($leadFormNeedsSelection)
-                                        请在后台首页模块中添加线索表单模块，并指定官网使用的表单。
-                                    @else
-                                        在后台增长中心启用表单后，再通过首页模块指定官网表单。
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="ent-form-row">
-                                <label>姓名<input type="text" placeholder="例如：林清" disabled></label>
-                                <label>工作邮箱<input type="email" placeholder="name@company.com" disabled></label>
-                            </div>
-                            <label>企业名称<input type="text" placeholder="例如：Northstar Industrial" disabled></label>
-                            <label>希望讨论的方向
-                                <select disabled>
-                                    <option>企业知识与 GEO 策略</option>
-                                    <option>AI 可见性观测</option>
-                                    <option>多渠道内容分发</option>
-                                </select>
-                            </label>
-                            <label>当前挑战<textarea rows="4" placeholder="简单描述团队、市场和目标" disabled></textarea></label>
-                            <button type="button" class="ent-button ent-button--primary ent-button--full" disabled>
-                                提交需求
-                                <i data-lucide="arrow-right" aria-hidden="true"></i>
-                            </button>
-                            <small>演示状态不会发送或保存任何信息</small>
-                        </div>
-                    @endif
+                        <a href="https://github.com/bluesxxx/geo-pro" target="_blank" rel="noopener noreferrer" class="ent-button ent-button--primary ent-button--full">
+                            GitHub 获取 GEO PRO
+                            <i data-lucide="arrow-right" aria-hidden="true"></i>
+                        </a>
+                        <small>克隆仓库后按 README 的 Docker Compose 步骤启动即可</small>
+                    </div>
                 </div>
             </div>
         </section>

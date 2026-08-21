@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use App\Services\Admin\Analytics\AiVisibilityAnalyticsFilter;
 use App\Services\Admin\Analytics\AnalyticsFilter;
 use App\Services\Admin\Analytics\AnalyticsLogFilter;
-use App\Services\Admin\Analytics\LeadAnalyticsFilter;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
@@ -84,11 +83,6 @@ class AnalyticsFilterTest extends TestCase
                 'ai_date_from' => '0001-01-01',
                 'ai_date_to' => '2026-08-02',
             ]),
-            LeadAnalyticsFilter::fromRequest([
-                'lead_preset' => 'custom',
-                'lead_date_from' => '0001-01-01',
-                'lead_date_to' => '2026-08-02',
-            ]),
         ];
 
         foreach ($filters as $filter) {
@@ -124,17 +118,10 @@ class AnalyticsFilterTest extends TestCase
             'ai_date_from' => '2026-07-01',
             'ai_date_to' => '2026-07-05',
         ]);
-        $leads = LeadAnalyticsFilter::fromRequest([
-            'lead_date_from' => '2026-06-01',
-            'lead_date_to' => '2026-06-10',
-        ]);
 
         $this->assertSame('custom', $ai->preset);
         $this->assertSame('2026-07-01', $ai->dateFrom->toDateString());
         $this->assertSame('2026-07-05', $ai->dateTo->toDateString());
-        $this->assertSame('custom', $leads->preset);
-        $this->assertSame('2026-06-01', $leads->dateFrom->toDateString());
-        $this->assertSame('2026-06-10', $leads->dateTo->toDateString());
 
         Carbon::setTestNow();
     }

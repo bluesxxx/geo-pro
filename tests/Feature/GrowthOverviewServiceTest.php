@@ -6,8 +6,6 @@ use App\Models\Article;
 use App\Models\Author;
 use App\Models\Category;
 use App\Models\DistributionChannel;
-use App\Models\LeadForm;
-use App\Models\LeadSubmission;
 use App\Services\Admin\Analytics\GrowthOverviewService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -18,31 +16,9 @@ class GrowthOverviewServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_current_lead_alert_links_to_the_unbounded_inbox_while_the_card_keeps_a_thirty_day_scope(): void
-    {
-        Carbon::setTestNow('2026-08-02 12:00:00');
-        $form = $this->activeForm();
-        $lead = LeadSubmission::query()->create([
-            'lead_form_id' => $form->id,
-            'status' => LeadSubmission::STATUS_NEW,
-            'payload' => ['name' => '历史待处理线索'],
-            'source_url' => '/',
-            'ip_address' => '10.0.0.3',
-        ]);
-        $lead->forceFill(['created_at' => Carbon::parse('2026-01-01 10:00:00')])->saveQuietly();
-
-        $overview = app(GrowthOverviewService::class)->snapshot(false);
-
-        $this->assertSame(1, $overview['metrics']['new_leads']);
-        $this->assertSame(0, $overview['cards']['leads']['new_30d']);
-        $this->assertSame('new_leads', $overview['alert']['type']);
-        $this->assertSame(route('admin.leads.index', ['status' => LeadSubmission::STATUS_NEW]), $overview['alert']['href']);
-    }
-
     public function test_current_distribution_failure_alert_links_to_the_unbounded_job_queue(): void
     {
         Carbon::setTestNow('2026-08-02 12:00:00');
-        $this->activeForm();
         $author = Author::query()->create(['name' => '总览作者', 'slug' => 'overview-author', 'status' => 'active']);
         $category = Category::query()->create(['name' => '总览分类', 'slug' => 'overview-category', 'status' => 'active']);
         $article = Article::query()->create([
@@ -79,7 +55,6 @@ class GrowthOverviewServiceTest extends TestCase
     public function test_traffic_snapshot_counts_get_requests_only(): void
     {
         Carbon::setTestNow('2026-08-02 12:00:00');
-        $this->activeForm();
 
         DB::table('view_logs')->insert([
             [
@@ -110,16 +85,6 @@ class GrowthOverviewServiceTest extends TestCase
             'unique_ip' => 1,
             'ai' => 0,
         ], $overview['cards']['traffic']);
-    }
-
-    private function activeForm(): LeadForm
-    {
-        return LeadForm::query()->create([
-            'name' => '总览启用表单',
-            'slug' => 'growth-overview-active-form',
-            'status' => LeadForm::STATUS_ACTIVE,
-            'fields' => [],
-        ]);
     }
 
     protected function tearDown(): void

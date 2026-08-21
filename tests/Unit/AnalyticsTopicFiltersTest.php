@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use App\Services\Admin\Analytics\AiVisibilityAnalyticsFilter;
-use App\Services\Admin\Analytics\LeadAnalyticsFilter;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
@@ -29,27 +28,6 @@ class AnalyticsTopicFiltersTest extends TestCase
         $this->assertSame('deepseek_analysis', $preset->provider);
         $this->assertSame('2026-07-30', $custom->dateFrom->toDateString());
         $this->assertSame('2026-08-02', $custom->dateTo->toDateString());
-    }
-
-    public function test_lead_filter_defaults_to_thirty_days_and_normalizes_dimensions(): void
-    {
-        Carbon::setTestNow('2026-08-02 12:00:00');
-
-        $default = LeadAnalyticsFilter::fromRequest([]);
-        $custom = LeadAnalyticsFilter::fromRequest([
-            'lead_preset' => 'custom',
-            'lead_date_from' => '2026-08-01',
-            'lead_date_to' => '2026-07-20',
-            'lead_form_id' => '8',
-            'lead_status' => 'converted',
-        ]);
-
-        $this->assertSame('2026-07-04', $default->dateFrom->toDateString());
-        $this->assertSame('2026-08-02', $default->dateTo->toDateString());
-        $this->assertSame('2026-07-20', $custom->dateFrom->toDateString());
-        $this->assertSame('2026-08-01', $custom->dateTo->toDateString());
-        $this->assertSame(8, $custom->formId);
-        $this->assertSame('converted', $custom->status);
     }
 
     protected function tearDown(): void
