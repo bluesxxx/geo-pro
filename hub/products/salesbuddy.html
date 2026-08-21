@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SalesBuddy · WhatsApp 私域 CRM（私有化部署）</title>
+  <meta name="description" content="SalesBuddy 功能详解与私有化部署：基于开源 wacrm 的 WhatsApp 共享收件箱、销售管道、群发与自动化，数据归你。" />
+  <style>
+    :root {
+      --bg: #070b16;
+      --surface: rgba(255, 255, 255, 0.04);
+      --surface-2: rgba(255, 255, 255, 0.025);
+      --line: rgba(120, 160, 255, 0.14);
+      --text: #e6ecf5;
+      --muted: #94a3b8;
+      --brand: #3b6fff;
+      --brand-2: #38bdf8;
+      --emerald: #34d399;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+    html, body { background: var(--bg); color: var(--text); }
+    body { font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.7; }
+    .tech-bg { position: fixed; inset: 0; z-index: -2; background:
+      radial-gradient(900px 600px at 12% -8%, rgba(56,189,248,0.14), transparent 60%),
+      radial-gradient(800px 500px at 100% 0%, rgba(37,99,235,0.16), transparent 55%),
+      var(--bg); }
+    .tech-grid { position: fixed; inset: 0; z-index: -1; background-image:
+      linear-gradient(rgba(120,160,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(120,160,255,0.05) 1px, transparent 1px);
+      background-size: 46px 46px; -webkit-mask-image: radial-gradient(900px 700px at 50% 0%, #000 30%, transparent 80%); mask-image: radial-gradient(900px 700px at 50% 0%, #000 30%, transparent 80%); }
+    .container { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+    a.back { display: inline-flex; align-items: center; gap: 8px; margin-top: 28px; color: #bcd0ff; text-decoration: none; font-size: 14px; }
+    a.back:hover { color: #fff; }
+    .brand-top { padding: 40px 0 8px; font-size: 14px; color: var(--muted); }
+    .brand-top b { color: #fff; }
+
+    h1 { font-size: 40px; line-height: 1.15; font-weight: 800; letter-spacing: -0.02em; margin-top: 12px; }
+    .lead { margin-top: 16px; font-size: 17px; color: #cbd5e1; max-width: 720px; }
+    .tag-row { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.04); padding: 6px 12px; font-size: 12px; color: #cbd5e1; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #34d399; }
+
+    section { margin-top: 56px; }
+    h2 { font-size: 24px; font-weight: 700; color: #fff; }
+    h2 .num { color: var(--brand-2); font-variant-numeric: tabular-nums; margin-right: 10px; }
+    .desc { margin-top: 8px; color: var(--muted); max-width: 720px; }
+
+    .feat { display: grid; gap: 16px; margin-top: 28px; }
+    @media (min-width: 720px) { .feat { grid-template-columns: repeat(2, 1fr); } }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015)); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+    .card h3 { font-weight: 600; color: #fff; display: flex; align-items: center; gap: 10px; }
+    .card h3 .ico { width: 28px; height: 28px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; color: #fff; background: linear-gradient(135deg,#64748b,#475569); }
+    .card p { margin-top: 10px; font-size: 14px; color: #cbd5e1; }
+    .card ul { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; color: #cbd5e1; }
+    .card ul li { display: flex; gap: 8px; }
+    .ok { color: var(--emerald); }
+
+    .deploy { margin-top: 56px; padding: 28px; border-radius: 18px; background: linear-gradient(180deg, rgba(56,189,248,0.08), rgba(37,99,235,0.03)); border: 1px solid rgba(56,189,248,0.25); }
+    .deploy h2 { color: #fff; }
+    .steps { display: grid; gap: 14px; margin-top: 22px; }
+    .step { display: flex; gap: 14px; align-items: flex-start; }
+    .step .n { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 8px; background: rgba(56,189,248,0.15); color: #bcd0ff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+    .step .t { font-size: 14px; color: #cbd5e1; }
+    .step .t b { color: #fff; }
+    pre { margin-top: 14px; background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 16px; overflow-x: auto; font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 13px; color: #cbd5e1; line-height: 1.6; }
+    code.key { color: #7dd3fc; }
+    .note { margin-top: 16px; padding: 14px 16px; border-radius: 12px; background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.25); font-size: 14px; color: #cbd5e1; }
+    .note b { color: #fff; }
+
+    .cta { margin-top: 48px; padding: 28px; text-align: center; border-radius: 18px; box-shadow: 0 0 0 1px rgba(56,189,248,0.18), 0 12px 40px -12px rgba(37,99,235,0.45); border: 1px solid var(--line); }
+    .cta h3 { color: #fff; font-size: 20px; font-weight: 700; }
+    .cta p { color: #cbd5e1; margin-top: 8px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 600; text-decoration: none; transition: .2s; cursor: pointer; padding: 12px 22px; margin: 18px 6px 0; }
+    .btn-primary { background: linear-gradient(135deg, #3b6fff, #2563eb); color: #fff; }
+    .btn-primary:hover { opacity: .92; }
+    .btn-ghost { border: 1px solid rgba(120,160,255,0.4); color: #fff; }
+    .btn-ghost:hover { background: rgba(255,255,255,0.10); }
+
+    footer { border-top: 1px solid rgba(255,255,255,0.10); margin-top: 64px; }
+    .footer-inner { max-width: 980px; margin: 0 auto; padding: 28px 20px; font-size: 13px; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="tech-bg"></div>
+  <div class="tech-grid"></div>
+
+  <div class="container">
+    <a class="back" href="../index.html">← 返回 JetSocio 工作台</a>
+
+    <div class="brand-top">JetSocio · <b>SalesBuddy</b></div>
+    <h1>SalesBuddy</h1>
+    <p class="lead">把 WhatsApp 变成你的跨境销售中枢。基于开源项目 <b>wacrm</b> 构建的私域 CRM——共享收件箱、联系人、销售管道、群发与无代码自动化，全部跑在你自己的服务器上，对话数据归你所有。</p>
+    <div class="tag-row">
+      <span class="chip"><span class="dot"></span> 基于 wacrm 开源</span>
+      <span class="chip">私有化部署 · 数据归你</span>
+      <span class="chip">WhatsApp 生态就绪</span>
+    </div>
+
+    <section>
+      <h2><span class="num">01</span>它能帮你解决什么</h2>
+      <p class="desc">在「转化」这一环，跨境卖家最常见的问题是：询盘散落在个人 WhatsApp、跟进靠记忆、订单在聊天里溜走。SalesBuddy 把分散的对话收进统一的销售工作台。</p>
+      <div class="feat">
+        <div class="card">
+          <h3><span class="ico">✉</span> 共享收件箱</h3>
+          <p>把团队多个 WhatsApp 号码的消息汇聚到一个收件箱，按会话分配、转交、协作回复，不再漏回任何一条询盘。</p>
+          <ul>
+            <li><span class="ok">✓</span> 多号码 / 多坐席统一视图</li>
+            <li><span class="ok">✓</span> 会话分配与内部备注</li>
+            <li><span class="ok">✓</span> 消息已读 / 未读状态</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><span class="ico">☺</span> 联系人管理</h3>
+          <p>自动沉淀客户档案，标签分组、来源追踪，把「陌生人」变成「可复购的老客户」。</p>
+          <ul>
+            <li><span class="ok">✓</span> 名片 / 标签 / 自定义字段</li>
+            <li><span class="ok">✓</span> 客户来源与互动历史</li>
+            <li><span class="ok">✓</span> 去重与合并</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><span class="ico">▦</span> 销售管道</h3>
+          <p>用看板管理「询盘 → 报价 → 成交」全流程，每个客户的推进状态一目了然。</p>
+          <ul>
+            <li><span class="ok">✓</span> 可拖拽的阶段看板</li>
+            <li><span class="ok">✓</span> 阶段自动化流转</li>
+            <li><span class="ok">✓</span> 成交金额与预测</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><span class="ico">✈</span> 群发与自动化</h3>
+          <p>面向分组客户批量触达，配无代码自动化工作流，生日、回访问候、跟进提醒全自动。</p>
+          <ul>
+            <li><span class="ok">✓</span> 分组群发，规避封号风险</li>
+            <li><span class="ok">✓</span> 可视化流程编排</li>
+            <li><span class="ok">✓</span> 定时与触发式消息</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="deploy">
+      <h2><span class="num">02</span>私有化部署</h2>
+      <p class="desc">SalesBuddy 不单独 fork，而是直接基于上游开源项目 <b>wacrm</b> 进行私有化部署——你拥有完整的代码、数据与账号体系，没有中间商抽成。</p>
+
+      <div class="steps" style="margin-top:24px;">
+        <div class="step"><span class="n">1</span><div class="t"><b>准备环境</b>：一台装有 Docker 的服务器，开放 80/443 端口并准备一个域名。</div></div>
+        <div class="step"><span class="n">2</span><div class="t"><b>部署 wacrm</b>：拉取上游仓库，按其官方文档一键启动（SalesBuddy 即 wacrm 的私有化实例）。</div></div>
+        <div class="step"><span class="n">3</span><div class="t"><b>接入 WhatsApp</b>：在 Meta 后台创建 WhatsApp Business 应用，填好 Webhook 与令牌。</div></div>
+        <div class="step"><span class="n">4</span><div class="t"><b>配置团队</b>：创建坐席、分配号码、导入客户，即可开始收件与跟进。</div></div>
+      </div>
+
+      <pre><code class="key"># 1. 获取上游开源仓库
+git clone https://github.com/ArnasDon/wacrm.git
+cd wacrm
+
+# 2. 按官方文档启动（Docker 编排）
+docker compose up -d
+
+# 3. 浏览器访问并绑定你的域名 + WhatsApp Business API</code></pre>
+
+      <div class="note">
+        <b>关于「SalesBuddy」与「wacrm」</b>：SalesBuddy 是 JetSocio 对这套私域 CRM 能力的命名包装，底层即开源 wacrm。我们不在上游之外另起 fork，而是建议你直接部署 wacrm 并自行保留品牌定制空间，最大化代码可追溯性与安全更新能力。
+      </div>
+    </section>
+
+    <section class="cta">
+      <h3>让你的询盘不再漏回</h3>
+      <p>先回到工作台免费体验 GEO 体检，再决定如何部署你的销售中枢。</p>
+      <a href="../index.html#products" class="btn btn-primary">返回工作台</a>
+      <a href="https://github.com/ArnasDon/wacrm" class="btn btn-ghost">上游仓库 wacrm</a>
+    </section>
+  </div>
+
+  <footer>
+    <div class="footer-inner">© JetSocio · SalesBuddy 基于 wacrm 开源 · 数据归你所有</div>
+  </footer>
+</body>
+</html>

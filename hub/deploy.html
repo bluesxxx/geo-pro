@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>部署文档 — JetSocio 工具套件</title>
-<meta name="description" content="JetSocio 四款工具的本地部署与线上托管指南：GEO PRO、salesbuddy、PackMeta、DocuConsist。">
+<meta name="description" content="JetSocio 四款工具的本地部署与线上托管指南：Geo Pro、SalesBuddy、PackMeta、DocuConsist。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231D4ED8'/><path d='M7 6h18v5H13v3h9v5h-9v3h12v5H7z' fill='white'/></svg>">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -30,7 +30,7 @@ tailwind.config = { theme: { extend: { colors: { brand: { 50:'#eff6ff', 100:'#db
 <main class="mx-auto max-w-4xl px-4 sm:px-6 py-12">
   <h1 class="text-3xl font-bold tracking-tight">四款工具，各自部署</h1>
   <p class="mt-3 text-gray-600 leading-relaxed">
-    两个 SaaS（PackMeta / DocuConsist）已在线托管；两个可自托管工具（GEO PRO / salesbuddy）支持本地部署，
+    两个 SaaS（PackMeta / DocuConsist）已在线托管；两个可自托管工具（Geo Pro / SalesBuddy）支持本地部署，
     数据完全自持。下方给出各自的部署路径。
   </p>
 
@@ -55,7 +55,7 @@ tailwind.config = { theme: { extend: { colors: { brand: { 50:'#eff6ff', 100:'#db
   <section id="geo-pro" class="anchor-offset mt-12">
     <h2 class="flex items-center gap-2 text-xl font-semibold">
       <span class="flex h-7 w-7 items-center justify-center rounded-md bg-brand-100 text-brand-700 text-sm font-bold">1</span>
-      GEO PRO（本地自托管）
+      Geo Pro（本地自托管）
     </h2>
     <p class="mt-2 text-sm text-gray-600">Laravel 12 完整栈：PostgreSQL + pgvector、Redis、Horizon 队列、Reverb WebSocket。含 /audit 真后端体检（SSRF 网关 + 规则评分）。</p>
     <div class="mt-4 rounded-xl bg-gray-50 p-5 ring-1 ring-gray-100">
@@ -71,7 +71,7 @@ npm run dev                 # Vite</pre>
   <section id="salesbuddy" class="anchor-offset mt-12">
     <h2 class="flex items-center gap-2 text-xl font-semibold">
       <span class="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-100 text-emerald-700 text-sm font-bold">2</span>
-      salesbuddy（本地自托管）
+      SalesBuddy（本地自托管）
     </h2>
     <p class="mt-2 text-sm text-gray-600">自托管 WhatsApp CRM（wacrm 分支，Next.js + Supabase）。Hub 仅展示，不品牌化；部署请参照上游文档。</p>
     <div class="mt-4 rounded-xl bg-gray-50 p-5 ring-1 ring-gray-100">
@@ -105,7 +105,7 @@ npm run dev                 # Vite</pre>
   </section>
 
   <footer class="mt-16 border-t border-gray-100 pt-8 text-center text-sm text-gray-400">
-    © 2026 JetSocio · GEO PRO 基于 GEOFlow（Apache-2.0）品牌化改造
+    © 2026 JetSocio · Geo Pro 基于 GEOFlow（Apache-2.0）品牌化改造
   </footer>
 </main>
 </body>

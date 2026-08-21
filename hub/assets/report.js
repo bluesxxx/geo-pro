@@ -98,9 +98,9 @@
             <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">体检目标</p>
             <p class="mt-1 text-lg font-semibold text-gray-900 break-all">${escapeHtml(data.url || "")}</p>
             <p class="mt-2 text-sm text-gray-500">GEO 引用友好度评分：分数越高，AI 在回答用户问题时越可能引用你的内容。</p>
-            <a href="https://github.com/bluesxxx/geo-pro" target="_blank" rel="noopener noreferrer"
+            <a href="products/geo-pro.html"
                class="mt-4 inline-flex h-10 items-center justify-center rounded-lg bg-brand-700 px-5 text-sm font-semibold text-white hover:bg-brand-800">
-              了解 GEO PRO 完整版
+              了解 Geo Pro 完整版
             </a>
           </div>
         </div>
@@ -134,7 +134,7 @@
 
       <div class="mt-4 rounded-2xl bg-brand-700 p-6 text-white">
         <h3 class="text-base font-semibold">想要完整的 GEO 内容工作流？</h3>
-        <p class="mt-1.5 text-sm text-blue-100">GEO PRO 自托管平台：AI 内容生成、知识库、AI 可见性观测、多渠道分发，数据完全自持。</p>
+        <p class="mt-1.5 text-sm text-blue-100">Geo Pro 自托管平台：AI 内容生成、知识库、AI 可见性观测、多渠道分发，数据完全自持。</p>
         <a href="https://github.com/bluesxxx/geo-pro" target="_blank" rel="noopener noreferrer"
            class="mt-4 inline-flex h-10 items-center justify-center rounded-lg bg-white px-5 text-sm font-semibold text-brand-700 hover:bg-blue-50">
           GitHub 仓库

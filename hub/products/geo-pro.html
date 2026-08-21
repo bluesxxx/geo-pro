@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geo Pro · AI 内容 + GEO 引用优化（私有化部署）</title>
+  <meta name="description" content="Geo Pro 功能详解与私有化部署指南：知识库、AI 生成、GEO 引用优化、AI 可见性观测、多渠道分发，本地部署、数据自持。" />
+  <style>
+    :root {
+      --bg: #070b16;
+      --surface: rgba(255, 255, 255, 0.04);
+      --surface-2: rgba(255, 255, 255, 0.025);
+      --line: rgba(120, 160, 255, 0.14);
+      --text: #e6ecf5;
+      --muted: #94a3b8;
+      --brand: #3b6fff;
+      --brand-2: #38bdf8;
+      --emerald: #34d399;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+    html, body { background: var(--bg); color: var(--text); }
+    body { font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.7; }
+    .tech-bg { position: fixed; inset: 0; z-index: -2; background:
+      radial-gradient(900px 600px at 12% -8%, rgba(56,189,248,0.14), transparent 60%),
+      radial-gradient(800px 500px at 100% 0%, rgba(37,99,235,0.16), transparent 55%),
+      var(--bg); }
+    .tech-grid { position: fixed; inset: 0; z-index: -1; background-image:
+      linear-gradient(rgba(120,160,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(120,160,255,0.05) 1px, transparent 1px);
+      background-size: 46px 46px; -webkit-mask-image: radial-gradient(900px 700px at 50% 0%, #000 30%, transparent 80%); mask-image: radial-gradient(900px 700px at 50% 0%, #000 30%, transparent 80%); }
+    .container { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+    a.back { display: inline-flex; align-items: center; gap: 8px; margin-top: 28px; color: #bcd0ff; text-decoration: none; font-size: 14px; }
+    a.back:hover { color: #fff; }
+    .brand-top { padding: 40px 0 8px; font-size: 14px; color: var(--muted); }
+    .brand-top b { color: #fff; }
+
+    h1 { font-size: 40px; line-height: 1.15; font-weight: 800; letter-spacing: -0.02em; margin-top: 12px; }
+    .lead { margin-top: 16px; font-size: 17px; color: #cbd5e1; max-width: 720px; }
+    .tag-row { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.04); padding: 6px 12px; font-size: 12px; color: #cbd5e1; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #34d399; }
+
+    section { margin-top: 56px; }
+    h2 { font-size: 24px; font-weight: 700; color: #fff; }
+    h2 .num { color: var(--brand-2); font-variant-numeric: tabular-nums; margin-right: 10px; }
+    .desc { margin-top: 8px; color: var(--muted); max-width: 720px; }
+
+    .feat { display: grid; gap: 16px; margin-top: 28px; }
+    @media (min-width: 720px) { .feat { grid-template-columns: repeat(2, 1fr); } }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015)); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+    .card h3 { font-weight: 600; color: #fff; display: flex; align-items: center; gap: 10px; }
+    .card h3 .ico { width: 28px; height: 28px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; color: #fff; background: linear-gradient(135deg,#3b6fff,#2563eb); }
+    .card p { margin-top: 10px; font-size: 14px; color: #cbd5e1; }
+    .card ul { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; color: #cbd5e1; }
+    .card ul li { display: flex; gap: 8px; }
+    .ok { color: var(--emerald); }
+
+    .deploy { margin-top: 56px; padding: 28px; border-radius: 18px; background: linear-gradient(180deg, rgba(56,189,248,0.08), rgba(37,99,235,0.03)); border: 1px solid rgba(56,189,248,0.25); }
+    .deploy h2 { color: #fff; }
+    .steps { display: grid; gap: 14px; margin-top: 22px; }
+    .step { display: flex; gap: 14px; align-items: flex-start; }
+    .step .n { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 8px; background: rgba(56,189,248,0.15); color: #bcd0ff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+    .step .t { font-size: 14px; color: #cbd5e1; }
+    .step .t b { color: #fff; }
+    pre { margin-top: 14px; background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 16px; overflow-x: auto; font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 13px; color: #cbd5e1; line-height: 1.6; }
+    code.key { color: #7dd3fc; }
+
+    .arch { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; align-items: center; }
+    .node { padding: 12px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); font-size: 13px; color: #cbd5e1; }
+    .node b { color: #fff; display: block; font-size: 12px; margin-bottom: 2px; }
+    .arrow { color: var(--brand-2); font-size: 18px; }
+
+    .cta { margin-top: 48px; padding: 28px; text-align: center; border-radius: 18px; box-shadow: 0 0 0 1px rgba(56,189,248,0.18), 0 12px 40px -12px rgba(37,99,235, 0.45); border: 1px solid var(--line); }
+    .cta h3 { color: #fff; font-size: 20px; font-weight: 700; }
+    .cta p { color: #cbd5e1; margin-top: 8px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 600; text-decoration: none; transition: .2s; cursor: pointer; padding: 12px 22px; margin-top: 18px; }
+    .btn-primary { background: linear-gradient(135deg, #3b6fff, #2563eb); color: #fff; }
+    .btn-primary:hover { opacity: .92; }
+    .btn-ghost { border: 1px solid rgba(120,160,255,0.4); color: #fff; }
+    .btn-ghost:hover { background: rgba(255,255,255,0.10); }
+
+    footer { border-top: 1px solid rgba(255,255,255,0.10); margin-top: 64px; }
+    .footer-inner { max-width: 980px; margin: 0 auto; padding: 28px 20px; font-size: 13px; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="tech-bg"></div>
+  <div class="tech-grid"></div>
+
+  <div class="container">
+    <a class="back" href="../index.html">← 返回 JetSocio 工作台</a>
+
+    <div class="brand-top">JetSocio · <b>Geo Pro</b></div>
+    <h1>Geo Pro</h1>
+    <p class="lead">让 AI 搜索引擎（ChatGPT、豆包、DeepSeek、Perplexity…）优先引用你的内容。一套开源、可私有化部署的生成式引擎优化（GEO）平台——内容生产、引用观测、多渠道分发，全部跑在你的服务器上。</p>
+    <div class="tag-row">
+      <span class="chip"><span class="dot"></span> 本地部署 · 数据自持</span>
+      <span class="chip">零外部 API 依赖</span>
+      <span class="chip">Laravel 12 / PostgreSQL / Redis</span>
+    </div>
+
+    <section>
+      <h2><span class="num">01</span>它能帮你解决什么</h2>
+      <p class="desc">在「跨境获客」这一环，最大的问题是：买家已经习惯用 AI 找供应商，而你的站点从不出现在 AI 的回答里。Geo Pro 把「被 AI 看见」变成可衡量、可优化的工程问题。</p>
+      <div class="feat">
+        <div class="card">
+          <h3><span class="ico">K</span> 知识库中枢</h3>
+          <p>把产品、FAQ、技术文档、行业百科沉淀为结构化知识库，作为所有生成内容的唯一事实源。</p>
+          <ul>
+            <li><span class="ok">✓</span> 多源导入：Markdown / HTML / 网页抓取</li>
+            <li><span class="ok">✓</span> 向量检索（pgvector），语义召回</li>
+            <li><span class="ok">✓</span> 引用溯源，每条答案可定位出处</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><span class="ico">AI</span> AI 内容生成</h3>
+          <p>基于知识库自动产出 SEO + GEO 双优化文章、落地页与问答，排版可直接发布。</p>
+          <ul>
+            <li><span class="ok">✓</span> 一键生成，支持多语言</li>
+            <li><span class="ok">✓</span> 内建 GEO 写作规范（结构化、可摘录）</li>
+            <li><span class="ok">✓</span> 草稿 → 审阅 → 发布 工作流</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><span class="ico">G</span> GEO 引用优化</h3>
+          <p>内置「GEO 体检」与评分引擎，对照 H1、JSON-LD、FAQPage、正文厚度、营销词浓度等维度给出可执行的优化建议。</p>
+          <ul>
+            <li><span class="ok">✓</span> 免费免登录的站内体检表单</li>
+            <li><span class="ok">✓</span> 规则透明、可解释（非黑盒）</li>
+            <li><span class="ok">✓</span> 优化前后对比，持续改进</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><span class="ico">@</span> AI 可见性观测</h3>
+          <p>追踪你的域名在主流大模型回答中的被引用频次与排名变化，把「是否被 AI 引用」变成可监控指标。</p>
+          <ul>
+            <li><span class="ok">✓</span> 引用率、排名、竞品对比</li>
+            <li><span class="ok">✓</span> 可视化看板与趋势曲线</li>
+            <li><span class="ok">✓</span> 异常波动告警</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><span class="ico">↗</span> 多渠道分发</h3>
+          <p>同一份内容一键分发到网站、社媒与知识渠道，最大化被 AI 抓取与引用的表面积。</p>
+          <ul>
+            <li><span class="ok">✓</span> 站点 / 频道 / 定时发布</li>
+            <li><span class="ok">✓</span> 多平台发布状态聚合</li>
+            <li><span class="ok">✓</span> 与内容生命周期联动</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><span class="ico">⚡</span> 零外部依赖</h3>
+          <p>整套评分与生成逻辑在本地闭环，不强制调用任何第三方 LLM 或付费 API，私有数据不出网。</p>
+          <ul>
+            <li><span class="ok">✓</span> 可纯离线运行</li>
+            <li><span class="ok">✓</span> 可选对接本地 Ollama</li>
+            <li><span class="ok">✓</span> 合规友好，适合出海业务</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="deploy">
+      <h2><span class="num">02</span>私有化部署</h2>
+      <p class="desc">Geo Pro 为私有化优先设计。把平台完整部署在你自己的服务器 / 内网，所有数据与流量都不经过第三方。</p>
+
+      <div class="arch">
+        <div class="node"><b>入口</b>反向代理 :80/:443</div>
+        <span class="arrow">→</span>
+        <div class="node"><b>应用</b>Laravel 12 (PHP 8.4)</div>
+        <span class="arrow">→</span>
+        <div class="node"><b>数据</b>PostgreSQL + pgvector</div>
+        <span class="arrow">→</span>
+        <div class="node"><b>队列 / 实时</b>Redis · Horizon · Reverb</div>
+      </div>
+
+      <div class="steps" style="margin-top:24px;">
+        <div class="step"><span class="n">1</span><div class="t"><b>准备环境</b>：一台装有 Docker 的机器（Linux 推荐），开放 80/443 端口。</div></div>
+        <div class="step"><span class="n">2</span><div class="t"><b>拉取仓库</b>：从 GitHub 获取 Geo Pro 源码。</div></div>
+        <div class="step"><span class="n">3</span><div class="t"><b>一键启动</b>：使用内置编排脚本拉起完整栈（应用 + 数据库 + 缓存 + 队列）。</div></div>
+        <div class="step"><span class="n">4</span><div class="t"><b>配置域名</b>：绑定你的域名并启用 HTTPS，系统自带反向代理配置。</div></div>
+        <div class="step"><span class="n">5</span><div class="t"><b>完成</b>：后台登录即可使用，体检 / 生成 / 观测全部本地运行。</div></div>
+      </div>
+
+      <pre><code class="key"># 1. 获取源码
+git clone https://github.com/bluesxxx/geo-pro.git
+cd geo-pro
+
+# 2. 一键启动（含数据库 / Redis / 队列）
+<span style="color:#9ca3af"># 脚本会自动拉起整个栈并生成密钥</span>
+bash scripts/deploy-local.sh 3100
+
+# 3. 访问
+open http://localhost:3100</code></pre>
+
+      <p class="desc" style="margin-top:16px;">详细部署、备份与升级流程见仓库内 <code class="key">hub/deploy.html</code> 与 <code class="key">README</code>。所有数据落在自有数据库，迁移、备份、审计均可控。</p>
+    </section>
+
+    <section class="cta">
+      <h3>从一次免费体检开始</h3>
+      <p>先免费测一下你的站点是否被 AI 引用，再决定是否私有化部署。</p>
+      <a href="../index.html#products" class="btn btn-primary">返回体验 GEO 体检</a>
+      <a href="https://github.com/bluesxxx/geo-pro" class="btn btn-ghost">查看源码</a>
+    </section>
+  </div>
+
+  <footer>
+    <div class="footer-inner">© JetSocio · Geo Pro 基于 GEOFlow 修改并开源 · 数据 100% 自持</div>
+  </footer>
+</body>
+</html>
