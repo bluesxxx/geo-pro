@@ -1,0 +1,18 @@
+{
+  "version": "2.3.0",
+  "tag": "v2.3.0-geopro",
+  "release_date": "2026-08-21",
+  "release_type": "fork",
+  "archive_url": "",
+  "payload": {
+    "title_zh": "GEO PRO v2.3.0（GEOFlow fork）",
+    "title_en": "GEO PRO v2.3.0 (GEOFlow fork)",
+    "summary_zh": "GEO PRO 基于 GEOFlow 2.3.0 的品牌化 fork：深度去上游标识、移除线索表单、新增真后端网站 GEO 体检钩子，并配套 JetSocio 四产品引流 Hub。",
+    "summary_en": "GEO PRO is a rebranded fork of GEOFlow 2.3.0: upstream branding stripped, lead forms removed, a real-backend website GEO audit added, and integrated with the JetSocio four-product hub.",
+    "upgrade_tip_zh": "本 fork 默认关闭上游遥测与更新检查。升级请参考部署文档与 docs/CHANGELOG.md。",
+    "upgrade_tip_en": "This fork disables upstream telemetry and update checks by default. See the deployment docs and docs/CHANGELOG.md when upgrading.",
+    "release_url": "",
+    "changelog_url_zh": "",
+    "changelog_url_en": ""
+  }
+}
