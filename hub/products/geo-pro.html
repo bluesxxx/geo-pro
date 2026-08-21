@@ -92,11 +92,11 @@
 
     <div class="brand-top">JetSocio · <b>Geo Pro</b></div>
     <h1>Geo Pro</h1>
-    <p class="lead">让 AI 搜索引擎（ChatGPT、豆包、DeepSeek、Perplexity…）优先引用你的内容。一套开源、可私有化部署的生成式引擎优化（GEO）平台——内容生产、引用观测、多渠道分发，全部跑在你的服务器上。</p>
+    <p class="lead">让 AI 搜索引擎（ChatGPT、豆包、DeepSeek、Perplexity…）优先引用你的内容。一套可私有化部署的生成式引擎优化（GEO）平台——内容生产、引用观测、多渠道分发，全部跑在你的服务器上。</p>
     <div class="tag-row">
       <span class="chip"><span class="dot"></span> 本地部署 · 数据自持</span>
       <span class="chip">零外部 API 依赖</span>
-      <span class="chip">Laravel 12 / PostgreSQL / Redis</span>
+      <span class="chip">一次部署 · 长期可用</span>
     </div>
 
     <section>
@@ -161,51 +161,40 @@
     </section>
 
     <section class="deploy">
-      <h2><span class="num">02</span>私有化部署</h2>
-      <p class="desc">Geo Pro 为私有化优先设计。把平台完整部署在你自己的服务器 / 内网，所有数据与流量都不经过第三方。</p>
+      <h2><span class="num">02</span>为什么选择私有化部署</h2>
+      <p class="desc">Geo Pro 为私有化优先设计——它不是「租一个账号」，而是「在你的服务器上拥有一整套获客引擎」，所有数据与流量都不经过第三方。</p>
 
-      <div class="arch">
-        <div class="node"><b>入口</b>反向代理 :80/:443</div>
-        <span class="arrow">→</span>
-        <div class="node"><b>应用</b>Laravel 12 (PHP 8.4)</div>
-        <span class="arrow">→</span>
-        <div class="node"><b>数据</b>PostgreSQL + pgvector</div>
-        <span class="arrow">→</span>
-        <div class="node"><b>队列 / 实时</b>Redis · Horizon · Reverb</div>
+      <div class="feat">
+        <div class="card">
+          <h3><span class="ico">🔒</span> 数据完全自持</h3>
+          <p>内容、知识库与流量数据全部落在你自己的数据库，不经过任何第三方，出海业务无需担心数据出境风险。</p>
+        </div>
+        <div class="card">
+          <h3><span class="ico">∞</span> 一次部署，长期可用</h3>
+          <p>没有按席位 / 按调用量的订阅抽成，部署一次即可无限使用，成本只是服务器本身。</p>
+        </div>
+        <div class="card">
+          <h3><span class="ico">🛡</span> 可控可审计</h3>
+          <p>随时可备份、迁移、审计；规则与提示词完全透明，不被上游改动绑架，也不受外部服务停服影响。</p>
+        </div>
+        <div class="card">
+          <h3><span class="ico">🌐</span> 合规友好</h3>
+          <p>支持内网 / 私有云部署，满足海外合规要求；可选对接本地大模型，敏感内容不出网。</p>
+        </div>
       </div>
 
-      <div class="steps" style="margin-top:24px;">
-        <div class="step"><span class="n">1</span><div class="t"><b>准备环境</b>：一台装有 Docker 的机器（Linux 推荐），开放 80/443 端口。</div></div>
-        <div class="step"><span class="n">2</span><div class="t"><b>拉取仓库</b>：从 GitHub 获取 Geo Pro 源码。</div></div>
-        <div class="step"><span class="n">3</span><div class="t"><b>一键启动</b>：使用内置编排脚本拉起完整栈（应用 + 数据库 + 缓存 + 队列）。</div></div>
-        <div class="step"><span class="n">4</span><div class="t"><b>配置域名</b>：绑定你的域名并启用 HTTPS，系统自带反向代理配置。</div></div>
-        <div class="step"><span class="n">5</span><div class="t"><b>完成</b>：后台登录即可使用，体检 / 生成 / 观测全部本地运行。</div></div>
-      </div>
-
-      <pre><code class="key"># 1. 获取源码
-git clone https://github.com/bluesxxx/geo-pro.git
-cd geo-pro
-
-# 2. 一键启动（含数据库 / Redis / 队列）
-<span style="color:#9ca3af"># 脚本会自动拉起整个栈并生成密钥</span>
-bash scripts/deploy-local.sh 3100
-
-# 3. 访问
-open http://localhost:3100</code></pre>
-
-      <p class="desc" style="margin-top:16px;">详细部署、备份与升级流程见仓库内 <code class="key">hub/deploy.html</code> 与 <code class="key">README</code>。所有数据落在自有数据库，迁移、备份、审计均可控。</p>
+      <p class="desc" style="margin-top:20px;">从「准备环境」到「绑定域名可用」，内置脚本可一键拉起完整栈。详细的部署、备份与升级流程见 <code class="key">hub/deploy.html</code> 与仓库 README。</p>
     </section>
 
     <section class="cta">
       <h3>从一次免费体检开始</h3>
       <p>先免费测一下你的站点是否被 AI 引用，再决定是否私有化部署。</p>
       <a href="../index.html#products" class="btn btn-primary">返回体验 GEO 体检</a>
-      <a href="https://github.com/bluesxxx/geo-pro" class="btn btn-ghost">查看源码</a>
     </section>
   </div>
 
   <footer>
-    <div class="footer-inner">© JetSocio · Geo Pro 基于 GEOFlow 修改并开源 · 数据 100% 自持</div>
+    <div class="footer-inner">© JetSocio · Geo Pro 基于 GEOFlow 深度改造 · 数据 100% 自持</div>
   </footer>
 </body>
 </html>
