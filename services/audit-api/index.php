@@ -37,6 +37,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
     exit;
 }
 
+/* ---------- 健康检查（Railway GET / 与 /health） ---------- */
+
+$requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+if (($requestUri === '/' || $requestUri === '/health') && ($_SERVER['REQUEST_METHOD'] ?? '') === 'GET') {
+    respond(200, ['ok' => true, 'service' => 'jetsocio-audit-api', 'time' => date('c')]);
+}
+
 /* ---------- 方法约束 ---------- */
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {

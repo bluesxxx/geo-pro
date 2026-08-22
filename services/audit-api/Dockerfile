@@ -8,4 +8,5 @@ COPY services/audit-api/index.php /app/index.php
 
 EXPOSE 8080
 
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "/app"]
+# 监听 Railway 注入的 $PORT（默认 8080），避免硬编码端口导致连接/健康检查失败
+CMD php -S 0.0.0.0:${PORT:-8080} -t /app
