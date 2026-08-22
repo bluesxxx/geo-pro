@@ -9,7 +9,7 @@ namespace GeoPro\AuditEngine;
  * In GEO PRO itself this class is NOT used — the Laravel side implements
  * WebPageFetcherInterface with the SafeOutboundHttpClient gateway instead.
  */
-final class CurlWebPageFetcher implements WebPageFetcherInterface
+class CurlWebPageFetcher implements WebPageFetcherInterface
 {
     private const USER_AGENT = 'JetSocioAuditBot/1.0 (+https://jetsocio.com)';
 
@@ -50,15 +50,17 @@ final class CurlWebPageFetcher implements WebPageFetcherInterface
             CURLOPT_SSL_VERIFYPEER => true,
         ]);
 
-        $html = curl_exec($ch);
+        // IMPORTANT: when CURLOPT_WRITEFUNCTION is set, curl_exec() returns a
+        // boolean (true on success), NOT the body. The real HTML lives in $body.
+        $ok = curl_exec($ch);
         $errno = curl_errno($ch);
         $error = curl_error($ch);
         $status = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
         curl_close($ch);
 
-        if ($html === false) {
+        if ($ok === false) {
             $detail = $errno === CURLE_ABORTED_BY_CALLBACK
-                ? '页面过大，已截断分析（上限 '.$this->maxBytes.' 字节）'
+                ? '页面过大，已中断抓取（上限 '.self::MAX_WRITE_BUFFER.' 字节）'
                 : ($error !== '' ? $error : '未知网络错误');
             throw new AuditException('抓取失败：'.$detail);
         }
@@ -66,12 +68,12 @@ final class CurlWebPageFetcher implements WebPageFetcherInterface
             throw new AuditException('目标页返回 HTTP '.$status);
         }
 
-        return mb_substr($html, 0, $this->maxBytes);
+        return mb_substr($body, 0, $this->maxBytes);
     }
 
     private const MAX_WRITE_BUFFER = 16 * 1024 * 1024;
 
-    private function assertSafeUrl(string $url): void
+    protected function assertSafeUrl(string $url): void
     {
         if ($url === '' || $url !== trim($url)) {
             throw new AuditException('URL 格式无效');
@@ -107,7 +109,7 @@ final class CurlWebPageFetcher implements WebPageFetcherInterface
         }
     }
 
-    private function isReservedIpv4(string $ip): bool
+    protected function isReservedIpv4(string $ip): bool
     {
         if (str_starts_with($ip, '0.') || str_starts_with($ip, '127.')
             || str_starts_with($ip, '169.254.') || str_starts_with($ip, '192.0.2.')

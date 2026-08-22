@@ -156,6 +156,69 @@ try {
 }
 check('fetcher: blocks private ip', $caught3 !== null);
 
+/* ============ CurlWebPageFetcher: must return the real body (regression) ============ */
+// Regression for the bug where, with CURLOPT_WRITEFUNCTION set, curl_exec()
+// returns a boolean instead of the body, so fetch() returned "1". We spin up a
+// tiny local HTTP server (no external network) and assert the real HTML comes back.
+
+$sampleHtml = '<!doctype html><html><head><title>测试页</title>'
+    .'<meta name="description" content="测试页描述">'
+    .'<script type="application/ld+json">{"@type":"FAQPage","mainEntity":[]}</script>'
+    .'</head><body><h1>主标题</h1><p>'.str_repeat('正文内容 ', 80).'</p></body></html>';
+
+$serverScript = sys_get_temp_dir().'/jetsocio_audit_test_server.php';
+file_put_contents($serverScript, "<?php\n"
+    ."\$sock = @stream_socket_server('tcp://127.0.0.1:0', \$e, \$m);\n"
+    ."if (!\$sock) { fwrite(STDERR, \"FAIL \$e \$m\\n\"); exit(1); }\n"
+    ."\$port = (int) parse_url((string) stream_socket_get_name(\$sock, false), PHP_URL_PORT);\n"
+    ."fwrite(STDOUT, \$port.\"\\n\");\n"
+    ."if ((\$conn = @stream_socket_accept(\$sock, 10)) !== false) {\n"
+    ."  fgets(\$conn);\n"
+    ."  \$body = ".var_export($sampleHtml, true).";\n"
+    ."  \$len = strlen(\$body);\n"
+    ."  fwrite(\$conn, \"HTTP/1.1 200 OK\\r\\nContent-Type: text/html; charset=utf-8\\r\\nContent-Length: \$len\\r\\nConnection: close\\r\\n\\r\\n\$body\");\n"
+    ."  fclose(\$conn);\n"
+    ."}\n"
+    ."fclose(\$sock);\n");
+
+$proc = @proc_open('php '.escapeshellarg($serverScript), [
+    ['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w'],
+], $pipes);
+
+if ($proc === false) {
+    check('fetcher: local server start', false, 'proc_open failed');
+} else {
+    $portLine = fgets($pipes[1]);
+    $port = (int) trim((string) $portLine);
+    fclose($pipes[0]);
+    if ($port > 0) {
+        // Relax the SSRF guard so the local server is reachable in the test only.
+        $testFetcher = new class(10, 2 * 1024 * 1024, 3) extends CurlWebPageFetcher {
+            protected function assertSafeUrl(string $url): void
+            {
+                $parts = parse_url($url);
+                if (! in_array(strtolower((string) ($parts['scheme'] ?? '')), ['http', 'https'], true)) {
+                    throw new AuditException('仅支持 http/https 链接');
+                }
+            }
+        };
+
+        $fetched = $testFetcher->fetch('http://127.0.0.1:'.$port.'/');
+        check('fetcher: returns real body (not "1")', $fetched !== '1' && str_contains($fetched, '<h1>主标题</h1>'), 'got '.substr($fetched, 0, 40));
+        $feat = (new FeatureExtractor())->extract($fetched);
+        check('fetcher+extract: has_h1 true', same(true, $feat['has_h1']));
+        check('fetcher+extract: has_schema true', same(true, $feat['has_schema']));
+        check('fetcher+extract: has_faq_schema true', same(true, $feat['has_faq_schema']));
+        check('fetcher+extract: text_length>100', $feat['text_length'] > 100, 'got '.$feat['text_length']);
+    } else {
+        check('fetcher: read server port', false, 'no port from server');
+    }
+    fclose($pipes[1]);
+    fclose($pipes[2]);
+    @proc_terminate($proc);
+    @proc_close($proc);
+}
+
 /* ============ summary ============ */
 
 echo "\n{$tests} tests, {$failures} failures\n";
