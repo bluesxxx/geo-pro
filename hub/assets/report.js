@@ -1,13 +1,19 @@
 /**
  * JetSocio Hub — GEO 体检报告渲染
- * 调审计 API（Railway），内联渲染报告。零依赖（原生 JS + 内联 SVG）。
- * 所有文案走 JS_I18N 国际化；切语言时若报告已展示则就地重渲。
+ * 调审计 API（经 Cloudflare Worker 反代 Railway 后端），内联渲染报告。
+ * 零依赖（原生 JS + 内联 SVG）；样式走 index.html 的 .report-* 类，与全站暗色主题一致。
+ * 注意：不要使用 Tailwind 类名——本 Hub 是纯内联 CSS，无 Tailwind 构建。
  */
 (function () {
   "use strict";
 
-  // 审计 API 地址：部署后改为你的 Railway 域名
-  const AUDIT_API_URL = "https://audit-api.jetsocio.com/audit";
+  // 审计 API 入口：经 Cloudflare Worker 反向代理想访问 Railway 后端
+  // （国内直连 Railway 会被墙，故走 Worker）。域名到位后（如 api.jetsocio.com）改此自定义域名即可。
+  const AUDIT_API_URL = "https://jetsocio-audit-proxy.bluesjack.workers.dev/audit";
+
+  const CHECK_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>';
+  const X_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
+  const WARN_ICON = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
 
   function tt(key, fb) {
     return window.JS_I18N ? window.JS_I18N.t(key, fb) : (fb != null ? fb : key);
@@ -67,10 +73,10 @@
     lastReportData = data;
     const score = Math.max(0, Math.min(100, data.score | 0));
     const tone = score >= 80
-      ? { color: "#10b981", label: tt("r_score_excellent", "优秀"), text: "text-emerald-600" }
+      ? { color: "#34d399", label: tt("r_score_excellent", "优秀") }
       : score >= 50
-        ? { color: "#f59e0b", label: tt("r_score_warn", "待提升"), text: "text-amber-600" }
-        : { color: "#ef4444", label: tt("r_score_low", "需改进"), text: "text-red-600" };
+        ? { color: "#f59e0b", label: tt("r_score_warn", "待提升") }
+        : { color: "#ef4444", label: tt("r_score_low", "需改进") };
 
     const features = data.raw_features || {};
     const signals = [
@@ -89,60 +95,50 @@
     const offset = C * (1 - score / 100);
 
     reportBox.innerHTML = `
-      <div class="rounded-2xl bg-white p-6 sm:p-8 shadow-sm ring-1 ring-gray-100">
-        <div class="flex flex-col sm:flex-row items-center gap-8">
-          <div class="relative h-32 w-32 shrink-0">
-            <svg viewBox="0 0 120 120" class="h-32 w-32 -rotate-90">
-              <circle cx="60" cy="60" r="${R}" fill="none" stroke="#f1f5f9" stroke-width="10"/>
-              <circle cx="60" cy="60" r="${R}" fill="none" stroke="${tone.color}" stroke-width="10" stroke-linecap="round"
-                      stroke-dasharray="${C}" stroke-dashoffset="${offset}"/>
-            </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <span class="text-3xl font-bold text-gray-900 tabular-nums">${score}</span>
-              <span class="text-xs font-medium ${tone.text}">${tone.label}</span>
+      <div class="report">
+        <div class="report-card">
+          <div class="report-flex">
+            <div class="report-scorewrap">
+              <svg viewBox="0 0 120 120" width="128" height="128" style="transform:rotate(-90deg)">
+                <circle cx="60" cy="60" r="${R}" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="10"/>
+                <circle cx="60" cy="60" r="${R}" fill="none" stroke="${tone.color}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${offset}"/>
+              </svg>
+              <div class="report-score-num">
+                <span class="n">${score}</span>
+                <span class="l" style="color:${tone.color}">${tone.label}</span>
+              </div>
             </div>
-          </div>
-          <div class="flex-1 text-center sm:text-left min-w-0">
-            <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">${tt("r_target", "体检目标")}</p>
-            <p class="mt-1 text-lg font-semibold text-gray-900 break-all">${escapeHtml(data.url || "")}</p>
-            <p class="mt-2 text-sm text-gray-500">${tt("r_score_hint", "GEO 引用友好度评分：分数越高，AI 在回答用户问题时越可能引用你的内容。")}</p>
-            <a href="products/geo-pro.html"
-               class="mt-4 inline-flex h-10 items-center justify-center rounded-lg bg-brand-700 px-5 text-sm font-semibold text-white hover:bg-brand-800">
-              ${tt("r_cta_btn2", "了解 Geo Pro 完整版")}
-            </a>
+            <div class="report-meta">
+              <p class="t">${tt("r_target", "体检目标")}</p>
+              <p class="u">${escapeHtml(data.url || "")}</p>
+              <p class="h">${tt("r_score_hint", "GEO 引用友好度评分：分数越高，AI 在回答用户问题时越可能引用你的内容。")}</p>
+              <a href="products/geo-pro.html" class="report-cta-link">${tt("r_cta_btn2", "了解 Geo Pro 完整版")}</a>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="mt-4 grid gap-3 sm:grid-cols-2">
-        ${signals.map(function (s) {
-          return `<div class="flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-100">
-            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${s.ok ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"}">
-              ${s.ok ? CHECK_ICON : X_ICON}
-            </span>
-            <div class="min-w-0">
-              <p class="text-sm font-medium text-gray-900">${escapeHtml(s.label)}</p>
-              <p class="text-xs text-gray-500">${s.ok ? tt("r_ok", "已具备") : tt("r_missing", "缺失")}</p>
-            </div>
-          </div>`;
-        }).join("")}
-      </div>
-
-      <div class="mt-4 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
-        <h3 class="font-semibold text-gray-900">${tt("r_suggest_title", "优化建议")}</h3>
-        <ul class="mt-3 space-y-3">
-          ${suggestions.map(function (s) {
-            return `<li class="flex gap-3 text-sm text-gray-700">
-              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-600"></span>
-              <span>${escapeHtml(s)}</span>
-            </li>`;
+        <div class="report-grid">
+          ${signals.map(function (s) {
+            return `<div class="report-signal">
+              <span class="report-ic ${s.ok ? "ok" : "bad"}">${s.ok ? CHECK_ICON : X_ICON}</span>
+              <div><p class="st">${escapeHtml(s.label)}</p><p class="sb">${s.ok ? tt("r_ok", "已具备") : tt("r_missing", "缺失")}</p></div>
+            </div>`;
           }).join("")}
-        </ul>
-      </div>
+        </div>
 
-      <div class="mt-4 rounded-2xl bg-brand-700 p-6 text-white">
-        <h3 class="text-base font-semibold">${tt("r_cta_title", "想要完整的 GEO 内容工作流？")}</h3>
-        <p class="mt-1.5 text-sm text-blue-100">${tt("r_cta_desc", "Geo Pro 自托管平台：AI 内容生成、知识库、AI 可见性观测、多渠道分发，数据完全自持。")}</p>
+        <div class="report-suggest">
+          <h3>${tt("r_suggest_title", "优化建议")}</h3>
+          <ul>
+            ${suggestions.map(function (s) {
+              return `<li><span class="dot"></span><span>${escapeHtml(s)}</span></li>`;
+            }).join("")}
+          </ul>
+        </div>
+
+        <div class="report-cta">
+          <h3>${tt("r_cta_title", "想要完整的 GEO 内容工作流？")}</h3>
+          <p>${tt("r_cta_desc", "Geo Pro 自托管平台：AI 内容生成、知识库、AI 可见性观测、多渠道分发，数据完全自持。")}</p>
+        </div>
       </div>`;
 
     reportBox.classList.remove("hidden");
@@ -152,13 +148,13 @@
   function renderError(message) {
     lastReportData = null;
     reportBox.innerHTML = `
-      <div class="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-100 text-center">
-        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-50 text-red-600">
-          <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      <div class="report">
+        <div class="report-error">
+          <div class="ic">${WARN_ICON}</div>
+          <h3>${tt("r_err_title", "未能完成体检")}</h3>
+          <p class="target">${escapeHtml(input.value || "")}</p>
+          <p class="msg">${escapeHtml(message)}</p>
         </div>
-        <h3 class="mt-5 text-lg font-semibold text-gray-900">${tt("r_err_title", "未能完成体检")}</h3>
-        <p class="mt-2 text-sm text-gray-500 break-all">${escapeHtml(input.value || "")}</p>
-        <p class="mt-3 text-sm text-red-600">${escapeHtml(message)}</p>
       </div>`;
     reportBox.classList.remove("hidden");
     reportBox.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -170,9 +166,6 @@
       renderReport(lastReportData, false);
     }
   });
-
-  const CHECK_ICON = `<svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
-  const X_ICON = `<svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>`;
 
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, function (c) {

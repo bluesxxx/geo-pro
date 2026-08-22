@@ -126,6 +126,44 @@
     @media (min-width: 640px) { .footer-inner { flex-direction: row; justify-content: space-between; } }
 
     @media (prefers-reduced-motion: reduce) { .tech-bg, .tech-grid { animation: none; } }
+
+    /* ---- GEO 体检报告（report.js 渲染，暗色主题；本 Hub 无 Tailwind） ---- */
+    .report { display: flex; flex-direction: column; gap: 16px; }
+    .report-card { background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015)); border: 1px solid var(--line); border-radius: 18px; padding: 24px; box-shadow: 0 0 0 1px rgba(56,189,248,0.12), 0 12px 40px -12px rgba(37,99,235,0.35); }
+    .report-flex { display: flex; flex-direction: column; gap: 32px; align-items: center; }
+    @media (min-width: 640px) { .report-flex { flex-direction: row; align-items: center; gap: 32px; } }
+    .report-scorewrap { position: relative; height: 128px; width: 128px; flex-shrink: 0; }
+    .report-score-num { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .report-score-num .n { font-size: 30px; font-weight: 800; color: #fff; }
+    .report-score-num .l { font-size: 12px; font-weight: 600; }
+    .report-meta { flex: 1; text-align: center; min-width: 0; }
+    @media (min-width: 640px) { .report-meta { text-align: left; } }
+    .report-meta .t { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    .report-meta .u { margin-top: 4px; font-size: 18px; font-weight: 700; color: #fff; word-break: break-all; }
+    .report-meta .h { margin-top: 8px; font-size: 14px; color: var(--muted); }
+    .report-cta-link { margin-top: 16px; display: inline-flex; align-items: center; justify-content: center; height: 40px; padding: 0 20px; border-radius: 10px; background: linear-gradient(135deg,#3b6fff,#2563eb); color: #fff; font-size: 14px; font-weight: 600; text-decoration: none; }
+    .report-cta-link:hover { opacity: .92; }
+    .report-grid { display: grid; gap: 12px; }
+    @media (min-width: 640px) { .report-grid { grid-template-columns: 1fr 1fr; } }
+    .report-signal { display: flex; align-items: center; gap: 12px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); padding: 16px; }
+    .report-ic { flex-shrink: 0; height: 36px; width: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .report-ic.ok { background: rgba(52,211,153,0.12); color: #34d399; }
+    .report-ic.bad { background: rgba(239,68,68,0.12); color: #ef4444; }
+    .report-signal .st { font-size: 14px; font-weight: 600; color: #fff; }
+    .report-signal .sb { font-size: 12px; color: var(--muted); }
+    .report-suggest { border-radius: 18px; background: var(--surface); border: 1px solid var(--line); padding: 24px; }
+    .report-suggest h3 { font-size: 16px; font-weight: 700; color: #fff; }
+    .report-suggest ul { margin-top: 12px; display: flex; flex-direction: column; gap: 12px; }
+    .report-suggest li { display: flex; gap: 12px; font-size: 14px; color: #cbd5e1; }
+    .report-suggest li .dot { height: 6px; width: 6px; border-radius: 50%; background: #5b8cff; margin-top: 7px; flex-shrink: 0; }
+    .report-cta { border-radius: 18px; background: linear-gradient(135deg,#3b6fff,#2563eb); padding: 24px; color: #fff; }
+    .report-cta h3 { font-size: 16px; font-weight: 700; }
+    .report-cta p { margin-top: 6px; font-size: 14px; color: rgba(255,255,255,0.85); }
+    .report-error { border-radius: 18px; background: var(--surface); border: 1px solid var(--line); padding: 32px; text-align: center; }
+    .report-error .ic { margin: 0 auto; height: 56px; width: 56px; border-radius: 50%; background: rgba(239,68,68,0.12); color: #ef4444; display: flex; align-items: center; justify-content: center; }
+    .report-error h3 { margin-top: 20px; font-size: 18px; font-weight: 700; color: #fff; }
+    .report-error .target { margin-top: 8px; font-size: 14px; color: var(--muted); word-break: break-all; }
+    .report-error .msg { margin-top: 12px; font-size: 14px; color: #ef4444; }
   </style>
 </head>
 <body>
