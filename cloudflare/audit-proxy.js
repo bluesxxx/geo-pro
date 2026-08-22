@@ -10,7 +10,7 @@
 // - Railway 审计后端已放开“无 Origin 的服务端调用”，因此本 Worker 直接转发即可。
 // - 域名到位后（如 api.jetsocio.com），再将该域名绑定到本 Worker；前端 AUDIT_API_URL 同步改为该域名。
 
-const UPSTREAM = 'https://audit-api.up.railway.app';
+const UPSTREAM = 'https://geo-pro-production.up.railway.app';
 
 addEventListener('fetch', (event) => {
   event.respondWith(handle(event.request));
