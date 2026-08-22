@@ -17,6 +17,7 @@ use GeoPro\AuditEngine\CurlWebPageFetcher;
 const ALLOWED_ORIGINS = [
     'https://jetsocio.com',
     'https://www.jetsocio.com',
+    'https://jetsocio.pages.dev',
 ];
 
 const RATE_LIMIT_PER_MINUTE = 10;
@@ -50,13 +51,17 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     respond(405, ['error' => 'Method Not Allowed']);
 }
 
-/* ---------- CORS 实际请求 ---------- */
+/* ---------- CORS 实际请求 ----------
+ * 浏览器跨域调用：仅放行 ALLOWED_ORIGINS。
+ * 反向代理（Cloudflare Worker）走服务端 fetch，不带 Origin，直接放行（靠限流 + SSRF 防护兜底）。 */
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if (! in_array($origin, ALLOWED_ORIGINS, true)) {
+if ($origin !== '' && ! in_array($origin, ALLOWED_ORIGINS, true)) {
     respond(403, ['error' => 'Origin not allowed']);
 }
-header('Access-Control-Allow-Origin: '.$origin);
+if ($origin !== '') {
+    header('Access-Control-Allow-Origin: '.$origin);
+}
 
 /* ---------- 限流（无 DB 固定窗口，临时目录计数） ---------- */
 

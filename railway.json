@@ -6,7 +6,6 @@
     "rootDirectory": "."
   },
   "deploy": {
-    "startCommand": "php -S 0.0.0.0:${PORT:-8080} -t /app",
     "healthcheckPath": "/",
     "healthcheckTimeout": 100,
     "restartPolicyType": "ON_FAILURE",
