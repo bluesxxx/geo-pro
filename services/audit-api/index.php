@@ -9,6 +9,15 @@
  *  -> CurlWebPageFetcher（自带 SSRF 防护）+ AuditEngine（与 GEO PRO 共用同一份代码）
  */
 
+/* ---------- 健康检查（必须在加载引擎之前：确保 Railway 健康检查不会因引擎依赖加载失败而拿不到 200） ---------- */
+$requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+if (($requestUri === '/' || $requestUri === '/health') && ($_SERVER['REQUEST_METHOD'] ?? '') === 'GET') {
+    http_response_code(200);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['ok' => true, 'service' => 'jetsocio-audit-api', 'time' => date('c')]);
+    exit;
+}
+
 require __DIR__.'/vendor/audit-engine/src/autoload.php';
 
 use GeoPro\AuditEngine\AuditEngine;
@@ -36,13 +45,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
     }
     http_response_code(403);
     exit;
-}
-
-/* ---------- 健康检查（Railway GET / 与 /health） ---------- */
-
-$requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
-if (($requestUri === '/' || $requestUri === '/health') && ($_SERVER['REQUEST_METHOD'] ?? '') === 'GET') {
-    respond(200, ['ok' => true, 'service' => 'jetsocio-audit-api', 'time' => date('c')]);
 }
 
 /* ---------- 方法约束 ---------- */
