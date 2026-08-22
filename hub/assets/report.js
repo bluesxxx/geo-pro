@@ -7,9 +7,10 @@
 (function () {
   "use strict";
 
-  // 审计 API 入口：经 Cloudflare Worker 反向代理想访问 Railway 后端
-  // （国内直连 Railway 会被墙，故走 Worker）。域名到位后（如 api.jetsocio.com）改此自定义域名即可。
-  const AUDIT_API_URL = "https://jetsocio-audit-proxy.bluesjack.workers.dev/audit";
+  // 审计 API 入口：同源 Pages Function /audit（Cloudflare 边缘函数服务端反代 Railway 后端）。
+  // 浏览器只与本站同源通信，规避独立 *.workers.dev 在国内的不可达问题。
+  // 绑定自定义域名（如 api.jetsocio.com）后，本函数随之在该域名下生效，无需改此处。
+  const AUDIT_API_URL = "/audit";
 
   const CHECK_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>';
   const X_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
