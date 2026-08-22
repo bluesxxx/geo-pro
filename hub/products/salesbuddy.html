@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SalesBuddy · WhatsApp 私域 CRM（私有化部署）</title>
-  <meta name="description" content="SalesBuddy 功能详解与私有化部署：WhatsApp 共享收件箱、销售管道、群发与自动化，数据完全自持。" />
+  <title data-i18n-title="meta_title_salesbuddy">SalesBuddy · WhatsApp 私域 CRM（私有化部署）</title>
+  <meta name="description" data-i18n="meta_desc_salesbuddy" content="SalesBuddy 功能详解与私有化部署：WhatsApp 共享收件箱、销售管道、群发与自动化，数据完全自持。" />
   <style>
     :root {
       --bg: #070b16;
@@ -31,7 +31,7 @@
     .container { max-width: 980px; margin: 0 auto; padding: 0 20px; }
     a.back { display: inline-flex; align-items: center; gap: 8px; margin-top: 28px; color: #bcd0ff; text-decoration: none; font-size: 14px; }
     a.back:hover { color: #fff; }
-    .brand-top { padding: 40px 0 8px; font-size: 14px; color: var(--muted); }
+    .brand-top { padding: 40px 0 8px; font-size: 14px; color: var(--muted); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .brand-top b { color: #fff; }
 
     h1 { font-size: 40px; line-height: 1.15; font-weight: 800; letter-spacing: -0.02em; margin-top: 12px; }
@@ -75,6 +75,7 @@
     .btn-primary:hover { opacity: .92; }
     .btn-ghost { border: 1px solid rgba(120,160,255,0.4); color: #fff; }
     .btn-ghost:hover { background: rgba(255,255,255,0.10); }
+    .lang-btn { font-size: 13px; padding: 6px 14px; }
 
     footer { border-top: 1px solid rgba(255,255,255,0.10); margin-top: 64px; }
     .footer-inner { max-width: 980px; margin: 0 auto; padding: 28px 20px; font-size: 13px; color: #64748b; }
@@ -85,81 +86,86 @@
   <div class="tech-grid"></div>
 
   <div class="container">
-    <a class="back" href="../index.html">← 返回 JetSocio 工作台</a>
+    <a class="back" href="../index.html" data-i18n="back">← 返回 JetSocio 工作台</a>
 
-    <div class="brand-top">JetSocio · <b>SalesBuddy</b></div>
+    <div class="brand-top">
+      <span>JetSocio · <b>SalesBuddy</b></span>
+      <button class="lang-btn btn btn-ghost" type="button">EN</button>
+    </div>
     <h1>SalesBuddy</h1>
-    <p class="lead">把 WhatsApp 变成你的跨境销售中枢。共享收件箱、联系人、销售管道、群发与无代码自动化，全部跑在你自己的服务器上，对话数据归你所有——你的客户资源，始终握在自己手里。</p>
+    <p class="lead" data-i18n="sb_lead">把 WhatsApp 变成你的跨境销售中枢。共享收件箱、联系人、销售管道、群发与无代码自动化，全部跑在你自己的服务器上，对话数据归你所有——你的客户资源，始终握在自己手里。</p>
     <div class="tag-row">
-      <span class="chip"><span class="dot"></span> 客户资产沉淀</span>
-      <span class="chip">私有化部署 · 数据归你</span>
-      <span class="chip">WhatsApp 生态就绪</span>
+      <span class="chip"><span class="dot"></span> <span data-i18n="sb_chip1">客户资产沉淀</span></span>
+      <span class="chip" data-i18n="sb_chip2">私有化部署 · 数据归你</span>
+      <span class="chip" data-i18n="sb_chip3">WhatsApp 生态就绪</span>
     </div>
 
     <section>
-      <h2><span class="num">01</span>它能帮你解决什么</h2>
-      <p class="desc">在「转化」这一环，跨境卖家最常见的问题是：询盘散落在个人 WhatsApp、跟进靠记忆、订单在聊天里溜走。SalesBuddy 把分散的对话收进统一的销售工作台。</p>
+      <h2><span class="num">01</span><span data-i18n="sb_sec01_title">它能帮你解决什么</span></h2>
+      <p class="desc" data-i18n="sb_sec01_desc">在「转化」这一环，跨境卖家最常见的问题是：询盘散落在个人 WhatsApp、跟进靠记忆、订单在聊天里溜走。SalesBuddy 把分散的对话收进统一的销售工作台。</p>
       <div class="feat">
         <div class="card">
-          <h3><span class="ico">✉</span> 共享收件箱</h3>
-          <p>把团队多个 WhatsApp 号码的消息汇聚到一个收件箱，按会话分配、转交、协作回复，不再漏回任何一条询盘。</p>
+          <h3><span class="ico">✉</span> <span data-i18n="sb_inbox_title">共享收件箱</span></h3>
+          <p data-i18n="sb_inbox_desc">把团队多个 WhatsApp 号码的消息汇聚到一个收件箱，按会话分配、转交、协作回复，不再漏回任何一条询盘。</p>
           <ul>
-            <li><span class="ok">✓</span> 多号码 / 多坐席统一视图</li>
-            <li><span class="ok">✓</span> 会话分配与内部备注</li>
-            <li><span class="ok">✓</span> 消息已读 / 未读状态</li>
+            <li><span class="ok">✓</span> <span data-i18n="sb_inbox_li1">多号码 / 多坐席统一视图</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="sb_inbox_li2">会话分配与内部备注</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="sb_inbox_li3">消息已读 / 未读状态</span></li>
           </ul>
         </div>
         <div class="card">
-          <h3><span class="ico">☺</span> 联系人管理</h3>
-          <p>自动沉淀客户档案，标签分组、来源追踪，把「陌生人」变成「可复购的老客户」。</p>
+          <h3><span class="ico">☺</span> <span data-i18n="sb_contact_title">联系人管理</span></h3>
+          <p data-i18n="sb_contact_desc">自动沉淀客户档案，标签分组、来源追踪，把「陌生人」变成「可复购的老客户」。</p>
           <ul>
-            <li><span class="ok">✓</span> 名片 / 标签 / 自定义字段</li>
-            <li><span class="ok">✓</span> 客户来源与互动历史</li>
-            <li><span class="ok">✓</span> 去重与合并</li>
+            <li><span class="ok">✓</span> <span data-i18n="sb_contact_li1">名片 / 标签 / 自定义字段</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="sb_contact_li2">客户来源与互动历史</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="sb_contact_li3">去重与合并</span></li>
           </ul>
         </div>
         <div class="card">
-          <h3><span class="ico">▦</span> 销售管道</h3>
-          <p>用看板管理「询盘 → 报价 → 成交」全流程，每个客户的推进状态一目了然。</p>
+          <h3><span class="ico">▦</span> <span data-i18n="sb_pipe_title">销售管道</span></h3>
+          <p data-i18n="sb_pipe_desc">用看板管理「询盘 → 报价 → 成交」全流程，每个客户的推进状态一目了然。</p>
           <ul>
-            <li><span class="ok">✓</span> 可拖拽的阶段看板</li>
-            <li><span class="ok">✓</span> 阶段自动化流转</li>
-            <li><span class="ok">✓</span> 成交金额与预测</li>
+            <li><span class="ok">✓</span> <span data-i18n="sb_pipe_li1">可拖拽的阶段看板</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="sb_pipe_li2">阶段自动化流转</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="sb_pipe_li3">成交金额与预测</span></li>
           </ul>
         </div>
         <div class="card">
-          <h3><span class="ico">✈</span> 群发与自动化</h3>
-          <p>面向分组客户批量触达，配无代码自动化工作流，生日、回访问候、跟进提醒全自动。</p>
+          <h3><span class="ico">✈</span> <span data-i18n="sb_auto_title">群发与自动化</span></h3>
+          <p data-i18n="sb_auto_desc">面向分组客户批量触达，配无代码自动化工作流，生日、回访问候、跟进提醒全自动。</p>
           <ul>
-            <li><span class="ok">✓</span> 分组群发，规避封号风险</li>
-            <li><span class="ok">✓</span> 可视化流程编排</li>
-            <li><span class="ok">✓</span> 定时与触发式消息</li>
+            <li><span class="ok">✓</span> <span data-i18n="sb_auto_li1">分组群发，规避封号风险</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="sb_auto_li2">可视化流程编排</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="sb_auto_li3">定时与触发式消息</span></li>
           </ul>
         </div>
       </div>
     </section>
 
     <section class="deploy">
-      <h2><span class="num">02</span>私有化部署</h2>
-      <p class="desc">SalesBuddy 支持完全私有化部署：你的客户对话与联系人全部存放在自己的服务器上，不经过任何第三方，数据主权牢牢握在手里，随时可备份、可迁移。</p>
+      <h2><span class="num">02</span><span data-i18n="sb_dep_title">私有化部署</span></h2>
+      <p class="desc" data-i18n="sb_dep_desc">SalesBuddy 支持完全私有化部署：你的客户对话与联系人全部存放在自己的服务器上，不经过任何第三方，数据主权牢牢握在手里，随时可备份、可迁移。</p>
 
       <div class="steps" style="margin-top: 24px;">
-        <div class="step"><span class="n">1</span><div class="t"><b>绑定 WhatsApp</b>：在 Meta 后台创建 WhatsApp Business 应用，把号码接入 SalesBuddy，所有客户对话即可进入统一收件箱。</div></div>
-        <div class="step"><span class="n">2</span><div class="t"><b>导入客户</b>：批量导入联系人或从历史聊天自动沉淀，给客户打标签、分组，建立你的私域资产。</div></div>
-        <div class="step"><span class="n">3</span><div class="t"><b>开始跟进</b>：用销售管道管理「询盘 → 报价 → 成交」，群发与自动化帮你把每一个询盘都接住。</div></div>
+        <div class="step"><span class="n">1</span><div class="t" data-i18n="sb_step1"><b>绑定 WhatsApp</b>：在 Meta 后台创建 WhatsApp Business 应用，把号码接入 SalesBuddy，所有客户对话即可进入统一收件箱。</div></div>
+        <div class="step"><span class="n">2</span><div class="t" data-i18n="sb_step2"><b>导入客户</b>：批量导入联系人或从历史聊天自动沉淀，给客户打标签、分组，建立你的私域资产。</div></div>
+        <div class="step"><span class="n">3</span><div class="t" data-i18n="sb_step3"><b>开始跟进</b>：用销售管道管理「询盘 → 报价 → 成交」，群发与自动化帮你把每一个询盘都接住。</div></div>
       </div>
     </section>
 
     <section class="cta">
-      <h3>让你的询盘不再漏回</h3>
-      <p>先回到工作台免费体验 GEO 体检，再决定如何部署你的销售中枢。</p>
-      <a href="../index.html#products" class="btn btn-primary">返回工作台</a>
-      <a href="geo-pro.html" class="btn btn-ghost">了解 Geo Pro</a>
+      <h3 data-i18n="sb_cta_title">让你的询盘不再漏回</h3>
+      <p data-i18n="sb_cta_desc">先回到工作台免费体验 GEO 体检，再决定如何部署你的销售中枢。</p>
+      <a href="../index.html#products" class="btn btn-primary" data-i18n="sb_cta_btn1">返回工作台</a>
+      <a href="geo-pro.html" class="btn btn-ghost" data-i18n="sb_cta_btn2">了解 Geo Pro</a>
     </section>
   </div>
 
   <footer>
-    <div class="footer-inner">© JetSocio · SalesBuddy 私有化部署 · 数据归你所有</div>
+    <div class="footer-inner" data-i18n="footer_salesbuddy">© JetSocio · SalesBuddy 私有化部署 · 数据归你所有</div>
   </footer>
+
+  <script src="../assets/i18n.js"></script>
 </body>
 </html>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>部署文档 — JetSocio 工具套件</title>
-<meta name="description" content="JetSocio 四款工具的本地部署与线上托管指南：Geo Pro、SalesBuddy、PackMeta、DocuConsist。">
+<title data-i18n-title="meta_title_deploy">部署文档 — JetSocio 工具套件</title>
+<meta name="description" data-i18n="meta_desc_deploy" content="JetSocio 四款工具的本地部署与线上托管指南：Geo Pro、SalesBuddy、PackMeta、DocuConsist。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231D4ED8'/><path d='M7 6h18v5H13v3h9v5h-9v3h12v5H7z' fill='white'/></svg>">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -13,6 +13,7 @@ tailwind.config = { theme: { extend: { colors: { brand: { 50:'#eff6ff', 100:'#db
 <style>
   pre { white-space: pre-wrap; word-break: break-word; }
   .anchor-offset { scroll-margin-top: 88px; }
+  .lang-btn { font-size: 13px; padding: 6px 14px; border-radius: 10px; }
 </style>
 </head>
 <body class="bg-white text-gray-900 antialiased">
@@ -23,13 +24,16 @@ tailwind.config = { theme: { extend: { colors: { brand: { 50:'#eff6ff', 100:'#db
       <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-700 text-white text-lg font-bold">J</span>
       <span class="text-lg font-semibold tracking-tight">JetSocio 部署文档</span>
     </a>
-    <a href="/" class="text-sm font-medium text-brand-700 hover:text-brand-800">← 返回首页</a>
+    <div class="flex items-center gap-3">
+      <button class="lang-btn border border-brand-100 text-brand-700 hover:bg-brand-50 font-medium" type="button">EN</button>
+      <a href="/" class="text-sm font-medium text-brand-700 hover:text-brand-800" data-i18n="deploy_back_home">← 返回首页</a>
+    </div>
   </div>
 </header>
 
 <main class="mx-auto max-w-4xl px-4 sm:px-6 py-12">
-  <h1 class="text-3xl font-bold tracking-tight">四款工具，各自部署</h1>
-  <p class="mt-3 text-gray-600 leading-relaxed">
+  <h1 class="text-3xl font-bold tracking-tight" data-i18n="deploy_title">四款工具，各自部署</h1>
+  <p class="mt-3 text-gray-600 leading-relaxed" data-i18n="deploy_intro">
     两个 SaaS（PackMeta / DocuConsist）已在线托管；两个可自托管工具（Geo Pro / SalesBuddy）支持本地部署，
     数据完全自持。下方给出各自的部署路径。
   </p>
@@ -37,17 +41,17 @@ tailwind.config = { theme: { extend: { colors: { brand: { 50:'#eff6ff', 100:'#db
   <section id="hub" class="anchor-offset mt-12">
     <h2 class="flex items-center gap-2 text-xl font-semibold">
       <span class="flex h-7 w-7 items-center justify-center rounded-md bg-brand-100 text-brand-700 text-sm font-bold">0</span>
-      本 Hub 站（JetSocio.com）
+      <span data-i18n="deploy_hub_title">本 Hub 站（JetSocio.com）</span>
     </h2>
-    <p class="mt-2 text-sm text-gray-600">纯静态，托管在 Cloudflare Pages；首屏体检调用轻量审计 API（Railway）。</p>
+    <p class="mt-2 text-sm text-gray-600" data-i18n="deploy_hub_desc">纯静态，托管在 Cloudflare Pages；首屏体检调用轻量审计 API（Railway）。</p>
     <div class="mt-4 rounded-xl bg-gray-50 p-5 ring-1 ring-gray-100">
-      <p class="text-sm font-medium text-gray-700">1. Cloudflare Pages</p>
+      <p class="text-sm font-medium text-gray-700" data-i18n="deploy_cf_label">1. Cloudflare Pages</p>
       <pre class="mt-2 text-xs text-gray-600">Pages 项目 → 上传 <code>hub/</code> 目录（index.html + assets/）→ 绑定 jetsocio.com 主域</pre>
-      <p class="mt-4 text-sm font-medium text-gray-700">2. 审计 API（Railway）</p>
+      <p class="mt-4 text-sm font-medium text-gray-700" data-i18n="deploy_api_label">2. 审计 API（Railway）</p>
       <pre class="mt-2 text-xs text-gray-600">New Project → GitHub <code>bluesxxx/geo-pro</code> → 构建目录 <code>services/audit-api</code>（Dockerfile）
 镜像 php:8.4-cli，监听 8080，无持久卷、无环境变量
 部署后得到 URL（如 audit-api.up.railway.app）→ CNAME: audit-api.jetsocio.com</pre>
-      <p class="mt-4 text-sm font-medium text-gray-700">3. 指向 API</p>
+      <p class="mt-4 text-sm font-medium text-gray-700" data-i18n="deploy_point_label">3. 指向 API</p>
       <pre class="mt-2 text-xs text-gray-600">修改 <code>hub/assets/report.js</code> 顶部 <code>AUDIT_API_URL</code> 为你的审计 API 地址</pre>
     </div>
   </section>
@@ -55,9 +59,9 @@ tailwind.config = { theme: { extend: { colors: { brand: { 50:'#eff6ff', 100:'#db
   <section id="geo-pro" class="anchor-offset mt-12">
     <h2 class="flex items-center gap-2 text-xl font-semibold">
       <span class="flex h-7 w-7 items-center justify-center rounded-md bg-brand-100 text-brand-700 text-sm font-bold">1</span>
-      Geo Pro（本地自托管）
+      <span data-i18n="deploy_geopro_title">Geo Pro（本地自托管）</span>
     </h2>
-    <p class="mt-2 text-sm text-gray-600">Laravel 12 完整栈：PostgreSQL + pgvector、Redis、Horizon 队列、Reverb WebSocket。含 /audit 真后端体检（SSRF 网关 + 规则评分）。</p>
+    <p class="mt-2 text-sm text-gray-600" data-i18n="deploy_geopro_desc">Laravel 12 完整栈：PostgreSQL + pgvector、Redis、Horizon 队列、Reverb WebSocket。含 /audit 真后端体检（SSRF 网关 + 规则评分）。</p>
     <div class="mt-4 rounded-xl bg-gray-50 p-5 ring-1 ring-gray-100">
       <pre class="text-xs text-gray-600">git clone https://github.com/bluesxxx/geo-pro.git
 cd geo-pro
@@ -71,9 +75,9 @@ npm run dev                 # Vite</pre>
   <section id="salesbuddy" class="anchor-offset mt-12">
     <h2 class="flex items-center gap-2 text-xl font-semibold">
       <span class="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-100 text-emerald-700 text-sm font-bold">2</span>
-      SalesBuddy（本地自托管）
+      <span data-i18n="deploy_salesbuddy_title">SalesBuddy（本地自托管）</span>
     </h2>
-    <p class="mt-2 text-sm text-gray-600">自托管 WhatsApp CRM（wacrm 分支，Next.js + Supabase）。Hub 仅展示，不品牌化；部署请参照上游文档。</p>
+    <p class="mt-2 text-sm text-gray-600" data-i18n="deploy_salesbuddy_desc">自托管 WhatsApp CRM。Hub 仅展示，不品牌化；部署请参照上游文档。</p>
     <div class="mt-4 rounded-xl bg-gray-50 p-5 ring-1 ring-gray-100">
       <pre class="text-xs text-gray-600">上游项目: https://github.com/wacrm/wacrm   （MIT，Arnas Donauskas）
 自托管要求: Next.js 16 + Supabase（Auth / Postgres / Realtime）</pre>
@@ -83,9 +87,9 @@ npm run dev                 # Vite</pre>
   <section id="packmeta" class="anchor-offset mt-12">
     <h2 class="flex items-center gap-2 text-xl font-semibold">
       <span class="flex h-7 w-7 items-center justify-center rounded-md bg-violet-100 text-violet-700 text-sm font-bold">3</span>
-      PackMeta（已上线）
+      <span data-i18n="deploy_packmeta_title">PackMeta（已上线）</span>
     </h2>
-    <p class="mt-2 text-sm text-gray-600">3D 装箱优化 SaaS，前端 Cloudflare Pages、后端 Railway，已托管，无需本地部署。</p>
+    <p class="mt-2 text-sm text-gray-600" data-i18n="deploy_packmeta_desc">3D 装箱优化 SaaS，前端 Cloudflare Pages、后端 Railway，已托管，无需本地部署。</p>
     <div class="mt-4 rounded-xl bg-gray-50 p-5 ring-1 ring-gray-100">
       <pre class="text-xs text-gray-600">线上: https://packmeta.pages.dev/
 模式: 免费试用（上传装箱单 → 秒级 3D 装柜方案）</pre>
@@ -95,18 +99,20 @@ npm run dev                 # Vite</pre>
   <section id="docuconsist" class="anchor-offset mt-12">
     <h2 class="flex items-center gap-2 text-xl font-semibold">
       <span class="flex h-7 w-7 items-center justify-center rounded-md bg-amber-100 text-amber-700 text-sm font-bold">4</span>
-      DocuConsist（已上线）
+      <span data-i18n="deploy_docuconsist_title">DocuConsist（已上线）</span>
     </h2>
-    <p class="mt-2 text-sm text-gray-600">外贸单证一致核验 SaaS，已托管（前端 Cloudflare、后端 Railway），免费免登录。</p>
+    <p class="mt-2 text-sm text-gray-600" data-i18n="deploy_docuconsist_desc">外贸单证一致核验 SaaS，已托管（前端 Cloudflare、后端 Railway），免费免登录。</p>
     <div class="mt-4 rounded-xl bg-gray-50 p-5 ring-1 ring-gray-100">
       <pre class="text-xs text-gray-600">线上: https://docuconsist.com/
 模式: 免费 · 免登录（上传单据 → 30 秒跨单比对）</pre>
     </div>
   </section>
 
-  <footer class="mt-16 border-t border-gray-100 pt-8 text-center text-sm text-gray-400">
+  <footer class="mt-16 border-t border-gray-100 pt-8 text-center text-sm text-gray-400" data-i18n="deploy_footer">
     © 2026 JetSocio
   </footer>
 </main>
+
+<script src="assets/i18n.js"></script>
 </body>
 </html>

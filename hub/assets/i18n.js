@@ -1,0 +1,509 @@
+/**
+ * JetSocio Hub — 轻量国际化（中英）
+ * 单页 JS 切换：data-i18n / data-i18n-html / data-i18n-attr + .lang-btn 切换器。
+ * 语言优先级：URL ?lang= > localStorage > 浏览器首选。
+ */
+window.JS_I18N = (function () {
+  "use strict";
+
+  var DICT = {
+    zh: {
+      // ---- meta ----
+      meta_title_home: "JetSocio · 跨境电商全链路工具栈",
+      meta_desc_home: "JetSocio —— 覆盖「被发现、转化、履约、合规」的跨境业务工具栈：Geo Pro、SalesBuddy、PackMeta、DocuConsist。",
+      meta_title_geopro: "Geo Pro · AI 内容 + GEO 引用优化（私有化部署）",
+      meta_desc_geopro: "Geo Pro 功能详解与私有化部署指南：知识库、AI 生成、GEO 引用优化、AI 可见性观测、多渠道分发，本地部署、数据自持。",
+      meta_title_salesbuddy: "SalesBuddy · WhatsApp 私域 CRM（私有化部署）",
+      meta_desc_salesbuddy: "SalesBuddy 功能详解与私有化部署：WhatsApp 共享收件箱、销售管道、群发与自动化，数据完全自持。",
+      meta_title_deploy: "部署文档 — JetSocio 工具套件",
+      meta_desc_deploy: "JetSocio 四款工具的本地部署与线上托管指南：Geo Pro、SalesBuddy、PackMeta、DocuConsist。",
+
+      // ---- index nav / hero ----
+      nav_value: "业务价值",
+      nav_products: "产品矩阵",
+      nav_chain: "全链路",
+      brand_tag: "跨境业务工具栈",
+      hero_chip: "4 款工具 · 一套跨境增长闭环",
+      hero_h1: "从「被 AI 看见」到「顺利签收」",
+      hero_lead: "跨境生意的每一环都在漏钱：没人搜得到你、询盘接不住、装柜太亏、单证被退。JetSocio 把四个环节的工具收进一个工作台，让获客、转化、履约、合规一次补齐。",
+      stat_box: "装箱空间利用率",
+      stat_doc: "单证误报率",
+      stat_data: "核心数据自持",
+      audit_title: "免费 GEO 体检",
+      audit_sub: "输入网址，30 秒看你的页面是否被 AI 优先引用。",
+      audit_placeholder: "example.com",
+      audit_submit: "免费体检",
+      audit_loading: "体检中…",
+      value_title: "跨境业务，卡在哪一步？",
+      value_desc: "四个高频痛点，对应 JetSocio 的四款工具。从流量到签收，每一步都补上。",
+      pain_01_stage: "01 · 获客",
+      pain_01_title: "没人搜得到你",
+      pain_01_desc: "买家在 ChatGPT / 豆包 / DeepSeek 问「哪家供应商好」，AI 根本不引用你。",
+      pain_02_stage: "02 · 转化",
+      pain_02_title: "询盘接不住",
+      pain_02_desc: "WhatsApp 消息散落各处，跟进靠记忆，订单在聊天里溜走。",
+      pain_03_stage: "03 · 履约",
+      pain_03_title: "装箱太亏",
+      pain_03_desc: "柜子装不满、危险品隔离靠手算，每一柜都多花冤枉钱。",
+      pain_04_stage: "04 · 合规",
+      pain_04_title: "单证被退",
+      pain_04_desc: "报关单、发票、提单对不上，清关延误、客户信任受损。",
+      products_title: "产品矩阵",
+      products_desc: "每一款都可独立使用，组合在一起构成完整的跨境工作流。",
+      geopro_role: "AI 内容 + GEO 引用优化",
+      geopro_chip: "自托管",
+      geopro_body: "让 AI 搜索引擎优先引用你的内容。内置知识库、AI 生成、AI 可见性观测与多渠道分发，本地部署、数据完全自持。",
+      geopro_li1: "提升在 LLM 回答中的引用概率",
+      geopro_li2: "内容生产 → 观测 → 分发闭环",
+      geopro_li3: "整站零外部 API 依赖",
+      geopro_more: "了解功能与部署 →",
+      salesbuddy_role: "WhatsApp 私域 CRM",
+      salesbuddy_chip: "开源",
+      salesbuddy_body: "把 WhatsApp 变成销售中枢：共享收件箱、联系人、销售管道、群发与无代码自动化——自托管、数据归你。",
+      salesbuddy_li1: "询盘自动归集，不再漏回",
+      salesbuddy_li2: "销售管道可视化跟进",
+      salesbuddy_li3: "群发 + 自动化工作流",
+      salesbuddy_more: "了解功能与部署 →",
+      packmeta_role: "3D 装箱优化平台",
+      packmeta_chip: "在线",
+      packmeta_body: "上传装箱单，30 秒生成 3D 装柜方案。空间利用率 +20%，IMDG 危险品隔离 / LIFO / 承重校验一键完成。",
+      packmeta_li1: "六大行业模板（冷链/化工/大件…）",
+      packmeta_li2: "运费立省、PDF 装柜报告",
+      packmeta_li3: "Three.js 3D 预览",
+      packmeta_more: "访问 Demo →",
+      docuconsist_role: "外贸单证一致核验",
+      docuconsist_chip: "在线",
+      docuconsist_body: "上传报关单 / 发票 / 提单 / 合同（≤8 份），30 秒跨单「三一致」比对，每条提示可溯源（UCP600 / ISBP）。",
+      docuconsist_li1: "单证不符 / FOB 责任错配预警",
+      docuconsist_li2: "OFAC 制裁筛查、运费单核验",
+      docuconsist_li3: "误报率 <5%，免费免登录",
+      docuconsist_more: "访问 Demo →",
+      band_title: "四款工具，一条跨境链路",
+      band_desc: "Geo Pro 帮你被看见 → SalesBuddy 把询盘接住 → PackMeta 让每一柜更省 → DocuConsist 守住清关。从流量到签收，JetSocio 补齐你今天正在漏掉的每一块钱。",
+      band_btn1: "了解 Geo Pro",
+      band_btn2: "浏览全部产品",
+      footer_home: "© JetSocio · 跨境业务工具栈",
+
+      // ---- geo-pro ----
+      back: "← 返回 JetSocio 工作台",
+      gp_lead: "让 AI 搜索引擎（ChatGPT、豆包、DeepSeek、Perplexity…）优先引用你的内容。一套可私有化部署的生成式引擎优化（GEO）平台——内容生产、引用观测、多渠道分发，全部跑在你的服务器上。",
+      gp_chip1: "本地部署 · 数据自持",
+      gp_chip2: "零外部 API 依赖",
+      gp_chip3: "一次部署 · 长期可用",
+      gp_sec01_title: "它能帮你解决什么",
+      gp_sec01_desc: "在「跨境获客」这一环，最大的问题是：买家已经习惯用 AI 找供应商，而你的站点从不出现在 AI 的回答里。Geo Pro 把「被 AI 看见」变成可衡量、可优化的工程问题。",
+      gp_kb_title: "知识库中枢",
+      gp_kb_desc: "把产品、FAQ、技术文档、行业百科沉淀为结构化知识库，作为所有生成内容的唯一事实源。",
+      gp_kb_li1: "多源导入：Markdown / HTML / 网页抓取",
+      gp_kb_li2: "向量检索（pgvector），语义召回",
+      gp_kb_li3: "引用溯源，每条答案可定位出处",
+      gp_ai_title: "AI 内容生成",
+      gp_ai_desc: "基于知识库自动产出 SEO + GEO 双优化文章、落地页与问答，排版可直接发布。",
+      gp_ai_li1: "一键生成，支持多语言",
+      gp_ai_li2: "内建 GEO 写作规范（结构化、可摘录）",
+      gp_ai_li3: "草稿 → 审阅 → 发布 工作流",
+      gp_geo_title: "GEO 引用优化",
+      gp_geo_desc: "内置「GEO 体检」与评分引擎，对照 H1、JSON-LD、FAQPage、正文厚度、营销词浓度等维度给出可执行的优化建议。",
+      gp_geo_li1: "免费免登录的站内体检表单",
+      gp_geo_li2: "规则透明、可解释（非黑盒）",
+      gp_geo_li3: "优化前后对比，持续改进",
+      gp_obs_title: "AI 可见性观测",
+      gp_obs_desc: "追踪你的域名在主流大模型回答中的被引用频次与排名变化，把「是否被 AI 引用」变成可监控指标。",
+      gp_obs_li1: "引用率、排名、竞品对比",
+      gp_obs_li2: "可视化看板与趋势曲线",
+      gp_obs_li3: "异常波动告警",
+      gp_dist_title: "多渠道分发",
+      gp_dist_desc: "同一份内容一键分发到网站、社媒与知识渠道，最大化被 AI 抓取与引用的表面积。",
+      gp_dist_li1: "站点 / 频道 / 定时发布",
+      gp_dist_li2: "多平台发布状态聚合",
+      gp_dist_li3: "与内容生命周期联动",
+      gp_zero_title: "零外部依赖",
+      gp_zero_desc: "整套评分与生成逻辑在本地闭环，不强制调用任何第三方 LLM 或付费 API，私有数据不出网。",
+      gp_zero_li1: "可纯离线运行",
+      gp_zero_li2: "可选对接本地 Ollama",
+      gp_zero_li3: "合规友好，适合出海业务",
+      gp_dep_title: "为什么选择私有化部署",
+      gp_dep_desc: "Geo Pro 为私有化优先设计——它不是「租一个账号」，而是「在你的服务器上拥有一整套获客引擎」，所有数据与流量都不经过第三方。",
+      gp_data_title: "数据完全自持",
+      gp_data_desc: "内容、知识库与流量数据全部落在你自己的数据库，不经过任何第三方，出海业务无需担心数据出境风险。",
+      gp_forever_title: "一次部署，长期可用",
+      gp_forever_desc: "没有按席位 / 按调用量的订阅抽成，部署一次即可无限使用，成本只是服务器本身。",
+      gp_audit_title: "可控可审计",
+      gp_audit_desc: "随时可备份、迁移、审计；规则与提示词完全透明，不被上游改动绑架，也不受外部服务停服影响。",
+      gp_compliance_title: "合规友好",
+      gp_compliance_desc: "支持内网 / 私有云部署，满足海外合规要求；可选对接本地大模型，敏感内容不出网。",
+      gp_cta_title: "从一次免费体检开始",
+      gp_cta_desc: "先免费测一下你的站点是否被 AI 引用，再决定是否私有化部署。",
+      gp_cta_btn: "返回体验 GEO 体检",
+      footer_geopro: "© JetSocio · Geo Pro · 数据 100% 自持",
+
+      // ---- salesbuddy ----
+      sb_lead: "把 WhatsApp 变成你的跨境销售中枢。共享收件箱、联系人、销售管道、群发与无代码自动化，全部跑在你自己的服务器上，对话数据归你所有——你的客户资源，始终握在自己手里。",
+      sb_chip1: "客户资产沉淀",
+      sb_chip2: "私有化部署 · 数据归你",
+      sb_chip3: "WhatsApp 生态就绪",
+      sb_sec01_title: "它能帮你解决什么",
+      sb_sec01_desc: "在「转化」这一环，跨境卖家最常见的问题是：询盘散落在个人 WhatsApp、跟进靠记忆、订单在聊天里溜走。SalesBuddy 把分散的对话收进统一的销售工作台。",
+      sb_inbox_title: "共享收件箱",
+      sb_inbox_desc: "把团队多个 WhatsApp 号码的消息汇聚到一个收件箱，按会话分配、转交、协作回复，不再漏回任何一条询盘。",
+      sb_inbox_li1: "多号码 / 多坐席统一视图",
+      sb_inbox_li2: "会话分配与内部备注",
+      sb_inbox_li3: "消息已读 / 未读状态",
+      sb_contact_title: "联系人管理",
+      sb_contact_desc: "自动沉淀客户档案，标签分组、来源追踪，把「陌生人」变成「可复购的老客户」。",
+      sb_contact_li1: "名片 / 标签 / 自定义字段",
+      sb_contact_li2: "客户来源与互动历史",
+      sb_contact_li3: "去重与合并",
+      sb_pipe_title: "销售管道",
+      sb_pipe_desc: "用看板管理「询盘 → 报价 → 成交」全流程，每个客户的推进状态一目了然。",
+      sb_pipe_li1: "可拖拽的阶段看板",
+      sb_pipe_li2: "阶段自动化流转",
+      sb_pipe_li3: "成交金额与预测",
+      sb_auto_title: "群发与自动化",
+      sb_auto_desc: "面向分组客户批量触达，配无代码自动化工作流，生日、回访问候、跟进提醒全自动。",
+      sb_auto_li1: "分组群发，规避封号风险",
+      sb_auto_li2: "可视化流程编排",
+      sb_auto_li3: "定时与触发式消息",
+      sb_dep_title: "私有化部署",
+      sb_dep_desc: "SalesBuddy 支持完全私有化部署：你的客户对话与联系人全部存放在自己的服务器上，不经过任何第三方，数据主权牢牢握在手里，随时可备份、可迁移。",
+      sb_step1: "绑定 WhatsApp：在 Meta 后台创建 WhatsApp Business 应用，把号码接入 SalesBuddy，所有客户对话即可进入统一收件箱。",
+      sb_step2: "导入客户：批量导入联系人或从历史聊天自动沉淀，给客户打标签、分组，建立你的私域资产。",
+      sb_step3: "开始跟进：用销售管道管理「询盘 → 报价 → 成交」，群发与自动化帮你把每一个询盘都接住。",
+      sb_cta_title: "让你的询盘不再漏回",
+      sb_cta_desc: "先回到工作台免费体验 GEO 体检，再决定如何部署你的销售中枢。",
+      sb_cta_btn1: "返回工作台",
+      sb_cta_btn2: "了解 Geo Pro",
+      footer_salesbuddy: "© JetSocio · SalesBuddy 私有化部署 · 数据归你所有",
+
+      // ---- deploy ----
+      deploy_title: "四款工具，各自部署",
+      deploy_intro: "两个 SaaS（PackMeta / DocuConsist）已在线托管；两个可自托管工具（Geo Pro / SalesBuddy）支持本地部署，数据完全自持。下方给出各自的部署路径。",
+      deploy_hub_title: "本 Hub 站（JetSocio.com）",
+      deploy_hub_desc: "纯静态，托管在 Cloudflare Pages；首屏体检调用轻量审计 API（Railway）。",
+      deploy_cf_label: "1. Cloudflare Pages",
+      deploy_api_label: "2. 审计 API（Railway）",
+      deploy_point_label: "3. 指向 API",
+      deploy_geopro_title: "Geo Pro（本地自托管）",
+      deploy_geopro_desc: "Laravel 12 完整栈：PostgreSQL + pgvector、Redis、Horizon 队列、Reverb WebSocket。含 /audit 真后端体检（SSRF 网关 + 规则评分）。",
+      deploy_salesbuddy_title: "SalesBuddy（本地自托管）",
+      deploy_salesbuddy_desc: "自托管 WhatsApp CRM。Hub 仅展示，不品牌化；部署请参照上游文档。",
+      deploy_packmeta_title: "PackMeta（已上线）",
+      deploy_packmeta_desc: "3D 装箱优化 SaaS，前端 Cloudflare Pages、后端 Railway，已托管，无需本地部署。",
+      deploy_docuconsist_title: "DocuConsist（已上线）",
+      deploy_docuconsist_desc: "外贸单证一致核验 SaaS，已托管（前端 Cloudflare、后端 Railway），免费免登录。",
+      deploy_back_home: "← 返回首页",
+      deploy_footer: "© 2026 JetSocio",
+
+      // ---- report.js ----
+      r_loading: "体检中…",
+      r_submit: "免费体检",
+      r_target: "体检目标",
+      r_score_hint: "GEO 引用友好度评分：分数越高，AI 在回答用户问题时越可能引用你的内容。",
+      r_signal_h1: "H1 主标题",
+      r_signal_jsonld: "JSON-LD 结构化数据",
+      r_signal_faq: "FAQPage 结构化数据",
+      r_signal_text: "正文内容量",
+      r_ok: "已具备",
+      r_missing: "缺失",
+      r_score_excellent: "优秀",
+      r_score_warn: "待提升",
+      r_score_low: "需改进",
+      r_suggest_title: "优化建议",
+      r_default_suggest: "页面结构良好，可进一步补充原创数据与权威引用。",
+      r_cta_title: "想要完整的 GEO 内容工作流？",
+      r_cta_desc: "Geo Pro 自托管平台：AI 内容生成、知识库、AI 可见性观测、多渠道分发，数据完全自持。",
+      r_cta_btn: "GitHub 仓库",
+      r_cta_btn2: "了解 Geo Pro 完整版",
+      r_err_title: "未能完成体检",
+      r_err_default: "服务暂时不可用，请稍后再试",
+      r_fetch_err: "体检失败，请稍后再试"
+    },
+
+    en: {
+      meta_title_home: "JetSocio · Cross-border Full-funnel Toolstack",
+      meta_desc_home: "JetSocio — a cross-border toolkit covering discovery, conversion, fulfillment and compliance: Geo Pro, SalesBuddy, PackMeta, DocuConsist.",
+      meta_title_geopro: "Geo Pro · AI Content + GEO Citation Optimization (Self-hosted)",
+      meta_desc_geopro: "Geo Pro feature guide & self-hosting: knowledge base, AI generation, GEO citation optimization, AI-visibility monitoring, multi-channel distribution — self-hosted, your data.",
+      meta_title_salesbuddy: "SalesBuddy · WhatsApp Private CRM (Self-hosted)",
+      meta_desc_salesbuddy: "SalesBuddy features & self-hosting: WhatsApp shared inbox, pipeline, broadcasts and automation — your data stays yours.",
+      meta_title_deploy: "Deployment Docs — JetSocio Toolkit",
+      meta_desc_deploy: "Local deployment & managed hosting guide for JetSocio's four tools: Geo Pro, SalesBuddy, PackMeta, DocuConsist.",
+
+      nav_value: "Value",
+      nav_products: "Products",
+      nav_chain: "Full funnel",
+      brand_tag: "Cross-border toolkit",
+      hero_chip: "4 tools · one cross-border growth loop",
+      hero_h1: "From AI-discovered to delivered",
+      hero_lead: "Every step of cross-border leaks money: no one finds you, inquiries slip, containers waste space, docs get rejected. JetSocio puts all four tools in one workspace — acquisition, conversion, fulfillment and compliance, covered at once.",
+      stat_box: "Container utilization",
+      stat_doc: "Doc false-positive rate",
+      stat_data: "Your core data stays yours",
+      audit_title: "Free GEO checkup",
+      audit_sub: "Enter a URL — see in 30s whether AI cites your page first.",
+      audit_placeholder: "example.com",
+      audit_submit: "Run checkup",
+      audit_loading: "Checking…",
+      value_title: "Where does cross-border stall?",
+      value_desc: "Four frequent pain points, matched by four JetSocio tools. From traffic to delivery, every step covered.",
+      pain_01_stage: "01 · Acquisition",
+      pain_01_title: "No one finds you",
+      pain_01_desc: "When buyers ask ChatGPT / Doubao / DeepSeek 'who's a good supplier', AI never cites you.",
+      pain_02_stage: "02 · Conversion",
+      pain_02_title: "Lost inquiries",
+      pain_02_desc: "WhatsApp messages scattered, follow-ups by memory, orders slip through chats.",
+      pain_03_stage: "03 · Fulfillment",
+      pain_03_title: "Costly loading",
+      pain_03_desc: "Under-filled containers, manual dangerous-goods separation — every container wastes money.",
+      pain_04_stage: "04 · Compliance",
+      pain_04_title: "Rejected docs",
+      pain_04_desc: "Customs forms, invoices and B/L don't match — clearance delays, lost trust.",
+      products_title: "Product matrix",
+      products_desc: "Each works alone; together they form a complete cross-border workflow.",
+      geopro_role: "AI content + GEO citation optimization",
+      geopro_chip: "Self-hosted",
+      geopro_body: "Make AI search engines cite your content first. Built-in knowledge base, AI generation, AI-visibility monitoring and multi-channel distribution — self-hosted, your data stays yours.",
+      geopro_li1: "Higher chance of being cited in LLM answers",
+      geopro_li2: "Create → monitor → distribute loop",
+      geopro_li3: "Zero external API dependency",
+      geopro_more: "Features & deployment →",
+      salesbuddy_role: "WhatsApp private CRM",
+      salesbuddy_chip: "Open source",
+      salesbuddy_body: "Turn WhatsApp into your sales hub: shared inbox, contacts, pipeline, broadcasts and no-code automation — self-hosted, your data.",
+      salesbuddy_li1: "Auto-captured inquiries, never missed",
+      salesbuddy_li2: "Visual pipeline follow-up",
+      salesbuddy_li3: "Broadcasts + automation workflows",
+      salesbuddy_more: "Features & deployment →",
+      packmeta_role: "3D container optimization",
+      packmeta_chip: "Online",
+      packmeta_body: "Upload a packing list, get a 3D loading plan in 30s. +20% space use; IMDG segregation / LIFO / weight checks in one click.",
+      packmeta_li1: "Six industry templates (cold-chain/chem/bulk…)",
+      packmeta_li2: "Instant freight savings, PDF loading report",
+      packmeta_li3: "Three.js 3D preview",
+      packmeta_more: "Visit demo →",
+      docuconsist_role: "Trade-doc consistency check",
+      docuconsist_chip: "Online",
+      docuconsist_body: "Upload customs forms / invoices / B/L / contracts (≤8), cross-document 'three-way consistency' check in 30s, each tip traceable (UCP600 / ISBP).",
+      docuconsist_li1: "Doc mismatch / FOB liability alert",
+      docuconsist_li2: "OFAC sanctions screening, freight check",
+      docuconsist_li3: "<5% false positive, free & no login",
+      docuconsist_more: "Visit demo →",
+      band_title: "Four tools, one cross-border chain",
+      band_desc: "Geo Pro gets you seen → SalesBuddy catches inquiries → PackMeta saves per container → DocuConsist guards clearance. From traffic to delivery, JetSocio plugs every leaking dollar.",
+      band_btn1: "Explore Geo Pro",
+      band_btn2: "Browse all products",
+      footer_home: "© JetSocio · Cross-border toolkit",
+
+      back: "← Back to JetSocio",
+      gp_lead: "Make AI search engines (ChatGPT, Doubao, DeepSeek, Perplexity…) cite your content first. A self-hostable Generative Engine Optimization (GEO) platform — content creation, citation monitoring and multi-channel distribution, all on your own servers.",
+      gp_chip1: "Self-hosted · your data",
+      gp_chip2: "Zero external API",
+      gp_chip3: "Deploy once · use forever",
+      gp_sec01_title: "What it solves for you",
+      gp_sec01_desc: "In cross-border acquisition, the biggest problem is this: buyers now use AI to find suppliers, yet your site never appears in AI answers. Geo Pro turns 'being seen by AI' into a measurable, optimizable engineering problem.",
+      gp_kb_title: "Knowledge hub",
+      gp_kb_desc: "Turn products, FAQs, docs and industry wiki into a structured knowledge base — the single source of truth for all generated content.",
+      gp_kb_li1: "Multi-source import: Markdown / HTML / web crawl",
+      gp_kb_li2: "Vector search (pgvector), semantic recall",
+      gp_kb_li3: "Citation tracing — every answer sourced",
+      gp_ai_title: "AI content generation",
+      gp_ai_desc: "Auto-generate SEO + GEO optimized articles, landing pages and Q&A from the knowledge base, ready to publish.",
+      gp_ai_li1: "One-click generate, multilingual",
+      gp_ai_li2: "Built-in GEO writing rules (structured, citable)",
+      gp_ai_li3: "Draft → review → publish workflow",
+      gp_geo_title: "GEO citation optimization",
+      gp_geo_desc: "Built-in 'GEO checkup' and scoring engine — actionable advice across H1, JSON-LD, FAQPage, body depth and marketing-word density.",
+      gp_geo_li1: "Free, no-login on-site checkup form",
+      gp_geo_li2: "Transparent, explainable rules (no black box)",
+      gp_geo_li3: "Before/after comparison, continuous improvement",
+      gp_obs_title: "AI visibility monitoring",
+      gp_obs_desc: "Track how often your domain is cited and its rank shifts across major LLMs — turn 'is AI citing me' into a monitored metric.",
+      gp_obs_li1: "Citation rate, rank, competitor compare",
+      gp_obs_li2: "Visual dashboards and trend curves",
+      gp_obs_li3: "Anomaly fluctuation alerts",
+      gp_dist_title: "Multi-channel distribution",
+      gp_dist_desc: "Push one piece of content to site, social and knowledge channels in one click — maximize the surface area AI can crawl and cite.",
+      gp_dist_li1: "Site / channel / scheduled publishing",
+      gp_dist_li2: "Multi-platform publish status aggregation",
+      gp_dist_li3: "Linked to content lifecycle",
+      gp_zero_title: "Zero external dependency",
+      gp_zero_desc: "All scoring and generation run locally — no forced third-party LLM or paid API; private data never leaves your network.",
+      gp_zero_li1: "Runs fully offline",
+      gp_zero_li2: "Optional local Ollama",
+      gp_zero_li3: "Compliance-friendly for global business",
+      gp_dep_title: "Why self-host",
+      gp_dep_desc: "Geo Pro is private-first by design — not 'rent an account' but 'own a complete acquisition engine on your servers'. All data and traffic stay off third parties.",
+      gp_data_title: "Your data stays yours",
+      gp_data_desc: "Content, knowledge base and traffic data all land in your own database — no third party, no cross-border data-exit risk for global business.",
+      gp_forever_title: "Deploy once, use forever",
+      gp_forever_desc: "No per-seat / per-call subscription cut; deploy once and use unlimited. Cost is just the server itself.",
+      gp_audit_title: "Controllable & auditable",
+      gp_audit_desc: "Backup, migrate and audit anytime; rules and prompts are fully transparent — not held hostage by upstream changes or external outages.",
+      gp_compliance_title: "Compliance-friendly",
+      gp_compliance_desc: "Intranet / private-cloud deployment for overseas compliance; optional local LLM so sensitive content never leaves the network.",
+      gp_cta_title: "Start with a free checkup",
+      gp_cta_desc: "Test free whether AI cites your site before deciding to self-host.",
+      gp_cta_btn: "Back to GEO checkup",
+      footer_geopro: "© JetSocio · Geo Pro · 100% your data",
+
+      sb_lead: "Turn WhatsApp into your cross-border sales hub. Shared inbox, contacts, pipeline, broadcasts and no-code automation — all on your own servers, conversation data belongs to you. Your customer assets always stay in your hands.",
+      sb_chip1: "Customer asset accumulation",
+      sb_chip2: "Self-hosted · your data",
+      sb_chip3: "WhatsApp ecosystem ready",
+      sb_sec01_title: "What it solves for you",
+      sb_sec01_desc: "In the 'conversion' step, the most common problem for cross-border sellers is: inquiries scattered across personal WhatsApp, follow-ups by memory, orders slipping through chats. SalesBuddy pulls scattered conversations into one sales workspace.",
+      sb_inbox_title: "Shared inbox",
+      sb_inbox_desc: "Aggregate messages from multiple team WhatsApp numbers into one inbox — assign, transfer and collaborate on replies, never miss an inquiry.",
+      sb_inbox_li1: "Multi-number / multi-agent unified view",
+      sb_inbox_li2: "Conversation assignment & internal notes",
+      sb_inbox_li3: "Read / unread message status",
+      sb_contact_title: "Contact management",
+      sb_contact_desc: "Auto-build customer profiles with tags and groups, source tracking — turn 'strangers' into 'repeat buyers'.",
+      sb_contact_li1: "Cards / tags / custom fields",
+      sb_contact_li2: "Customer source & interaction history",
+      sb_contact_li3: "Deduplicate & merge",
+      sb_pipe_title: "Sales pipeline",
+      sb_pipe_desc: "Kanban for the full 'inquiry → quote → deal' flow; each customer's progress is at a glance.",
+      sb_pipe_li1: "Drag-and-drop stage board",
+      sb_pipe_li2: "Stage automation",
+      sb_pipe_li3: "Deal amount & forecast",
+      sb_auto_title: "Broadcasts & automation",
+      sb_auto_desc: "Batch-reach segmented customers with no-code automation — birthdays, re-engagement, follow-up reminders, all automatic.",
+      sb_auto_li1: "Segmented broadcast, avoid ban risk",
+      sb_auto_li2: "Visual flow builder",
+      sb_auto_li3: "Scheduled & trigger-based messages",
+      sb_dep_title: "Self-hosted deployment",
+      sb_dep_desc: "SalesBuddy supports full self-hosting: your customer conversations and contacts live entirely on your own servers, no third party, data sovereignty firmly in your hands — backup and migrate anytime.",
+      sb_step1: "Connect WhatsApp: create a WhatsApp Business app in Meta, link the number to SalesBuddy — all customer conversations flow into one inbox.",
+      sb_step2: "Import customers: bulk-import contacts or auto-capture from chat history, tag and group them to build your private asset.",
+      sb_step3: "Start following up: manage 'inquiry → quote → deal' with the pipeline; broadcasts and automation catch every inquiry.",
+      sb_cta_title: "Stop missing inquiries",
+      sb_cta_desc: "Experience the free GEO checkup on the workspace first, then decide how to deploy your sales hub.",
+      sb_cta_btn1: "Back to workspace",
+      sb_cta_btn2: "Explore Geo Pro",
+      footer_salesbuddy: "© JetSocio · SalesBuddy self-hosted · your data",
+
+      deploy_title: "Four tools, deployed your way",
+      deploy_intro: "Two SaaS (PackMeta / DocuConsist) are managed online; two self-hostable tools (Geo Pro / SalesBuddy) support local deployment with full data ownership. Deployment paths below.",
+      deploy_hub_title: "This Hub (JetSocio.com)",
+      deploy_hub_desc: "Pure static, hosted on Cloudflare Pages; the checkup calls a lightweight audit API (Railway).",
+      deploy_cf_label: "1. Cloudflare Pages",
+      deploy_api_label: "2. Audit API (Railway)",
+      deploy_point_label: "3. Point to API",
+      deploy_geopro_title: "Geo Pro (self-hosted)",
+      deploy_geopro_desc: "Full Laravel 12 stack: PostgreSQL + pgvector, Redis, Horizon queue, Reverb WebSocket. Includes a real /audit backend (SSRF gateway + rule scoring).",
+      deploy_salesbuddy_title: "SalesBuddy (self-hosted)",
+      deploy_salesbuddy_desc: "Self-hosted WhatsApp CRM. Hub shows only, not rebranded; follow upstream docs to deploy.",
+      deploy_packmeta_title: "PackMeta (live)",
+      deploy_packmeta_desc: "3D container optimization SaaS, Cloudflare Pages frontend + Railway backend, managed, no local deploy needed.",
+      deploy_docuconsist_title: "DocuConsist (live)",
+      deploy_docuconsist_desc: "Trade-doc consistency SaaS, managed (Cloudflare frontend + Railway backend), free & no login.",
+      deploy_back_home: "← Back to home",
+      deploy_footer: "© 2026 JetSocio",
+
+      r_loading: "Checking…",
+      r_submit: "Run checkup",
+      r_target: "Checkup target",
+      r_score_hint: "GEO citation-friendliness score: higher means AI is more likely to cite your content when answering users.",
+      r_signal_h1: "H1 title",
+      r_signal_jsonld: "JSON-LD structured data",
+      r_signal_faq: "FAQPage structured data",
+      r_signal_text: "Body content volume",
+      r_ok: "Present",
+      r_missing: "Missing",
+      r_score_excellent: "Excellent",
+      r_score_warn: "Fair",
+      r_score_low: "Poor",
+      r_suggest_title: "Optimization suggestions",
+      r_default_suggest: "Page structure is good; consider adding original data and authoritative citations.",
+      r_cta_title: "Want the full GEO content workflow?",
+      r_cta_desc: "Geo Pro self-hosted: AI content generation, knowledge base, AI-visibility monitoring, multi-channel distribution — your data stays yours.",
+      r_cta_btn: "GitHub repository",
+      r_cta_btn2: "Explore full Geo Pro",
+      r_err_title: "Checkup could not complete",
+      r_err_default: "Service temporarily unavailable, please try again later",
+      r_fetch_err: "Checkup failed, please try again later"
+    }
+  };
+
+  var STORAGE_KEY = "jetsocio-lang";
+
+  function detect() {
+    var p = new URLSearchParams(location.search).get("lang");
+    if (p === "en" || p === "zh") return p;
+    var s = null;
+    try { s = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+    if (s === "en" || s === "zh") return s;
+    var nav = (navigator.language || "zh").toLowerCase();
+    return nav.indexOf("zh") === 0 ? "zh" : "en";
+  }
+
+  var lang = detect();
+
+  function t(key, fallback) {
+    var d = DICT[lang] || DICT.zh;
+    if (d[key] != null) return d[key];
+    if (DICT.zh[key] != null) return DICT.zh[key];
+    return fallback != null ? fallback : key;
+  }
+
+  function apply(root) {
+    root = root || document;
+    var nodes = root.querySelectorAll("[data-i18n]");
+    for (var i = 0; i < nodes.length; i++) {
+      var k = nodes[i].getAttribute("data-i18n");
+      if (k) nodes[i].textContent = t(k);
+    }
+    nodes = root.querySelectorAll("[data-i18n-html]");
+    for (i = 0; i < nodes.length; i++) {
+      var kh = nodes[i].getAttribute("data-i18n-html");
+      if (kh) nodes[i].innerHTML = t(kh);
+    }
+    nodes = root.querySelectorAll("[data-i18n-attr]");
+    for (i = 0; i < nodes.length; i++) {
+      var spec = nodes[i].getAttribute("data-i18n-attr") || "";
+      spec.split(",").forEach(function (pair) {
+        var idx = pair.indexOf(":");
+        if (idx < 0) return;
+        var attr = pair.slice(0, idx).trim();
+        var key = pair.slice(idx + 1).trim();
+        if (attr && key) nodes[i].setAttribute(attr, t(key));
+      });
+    }
+    var titleEl = root.querySelector("[data-i18n-title]");
+    if (titleEl) document.title = t(titleEl.getAttribute("data-i18n-title"));
+    var metaEl = root.querySelector('meta[name="description"][data-i18n]');
+    if (metaEl) metaEl.setAttribute("content", t(metaEl.getAttribute("data-i18n")));
+    document.documentElement.setAttribute("lang", lang === "en" ? "en" : "zh-CN");
+  }
+
+  function setLang(l) {
+    lang = l === "en" ? "en" : "zh";
+    try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
+    var u = new URL(location.href);
+    u.searchParams.set("lang", lang);
+    history.replaceState(null, "", u);
+    apply();
+    document.dispatchEvent(new CustomEvent("langchange", { detail: { lang: lang } }));
+  }
+
+  function init() {
+    apply();
+    var btns = document.querySelectorAll(".lang-btn");
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].addEventListener("click", function () {
+        setLang(lang === "zh" ? "en" : "zh");
+      });
+    }
+    document.addEventListener("langchange", function () {
+      var b = document.querySelectorAll(".lang-btn");
+      for (var j = 0; j < b.length; j++) b[j].textContent = lang === "zh" ? "EN" : "中";
+    });
+    document.dispatchEvent(new CustomEvent("langchange"));
+  }
+
+  return { t: t, setLang: setLang, getLang: function () { return lang; }, init: init, apply: apply };
+})();
+
+if (document.readyState !== "loading") window.JS_I18N.init();
+else document.addEventListener("DOMContentLoaded", function () { window.JS_I18N.init(); });

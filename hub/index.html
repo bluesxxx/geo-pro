@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JetSocio · 跨境电商全链路工具栈</title>
-  <meta name="description" content="JetSocio —— 覆盖「被发现、转化、履约、合规」的跨境业务工具栈：Geo Pro、SalesBuddy、PackMeta、DocuConsist。" />
+  <title data-i18n-title="meta_title_home">JetSocio · 跨境电商全链路工具栈</title>
+  <meta name="description" data-i18n="meta_desc_home" content="JetSocio —— 覆盖「被发现、转化、履约、合规」的跨境业务工具栈：Geo Pro、SalesBuddy、PackMeta、DocuConsist。" />
   <style>
     :root {
       --bg: #070b16;
@@ -59,6 +59,7 @@
     .btn-ghost { border: 1px solid rgba(120,160,255,0.4); color: #fff; }
     .btn-ghost:hover { background: rgba(255,255,255,0.10); }
     .nav-cta { padding: 8px 16px; font-size: 14px; }
+    .lang-btn { min-width: 44px; }
 
     /* Hero */
     .hero { display: grid; gap: 48px; align-items: center; padding: 64px 0 40px; }
@@ -136,163 +137,163 @@
       <div class="brand">
         <span class="brand-Logo">J</span>
         <span class="brand-name">JetSocio</span>
-        <span class="brand-tag">跨境业务工具栈</span>
+        <span class="brand-tag" data-i18n="brand_tag">跨境业务工具栈</span>
       </div>
       <nav class="nav-links">
-        <a href="#value">业务价值</a>
-        <a href="#products">产品矩阵</a>
-        <a href="#chain">全链路</a>
+        <a href="#value" data-i18n="nav_value">业务价值</a>
+        <a href="#products" data-i18n="nav_products">产品矩阵</a>
+        <a href="#chain" data-i18n="nav_chain">全链路</a>
       </nav>
+      <button class="lang-btn btn btn-ghost nav-cta" type="button">EN</button>
     </div>
   </header>
 
   <main class="container">
     <div class="hero">
       <section class="hero-left">
-        <span class="chip"><span class="dot"></span> 4 款工具 · 一套跨境增长闭环</span>
-        <h1>从「被 AI 看见」<br />到「顺利签收」</h1>
-        <p class="lead">
-          跨境生意的每一环都在漏钱：<b>没人搜得到你</b>、
-          <b>询盘接不住</b>、<b>装柜太亏</b>、<b>单证被退</b>。
-          JetSocio 把四个环节的工具收进一个工作台，让获客、转化、履约、合规一次补齐。
+        <span class="chip"><span class="dot"></span> <span data-i18n="hero_chip">4 款工具 · 一套跨境增长闭环</span></span>
+        <h1 data-i18n-html="hero_h1">从「被 AI 看见」<br />到「顺利签收」</h1>
+        <p class="lead" data-i18n="hero_lead">
+          跨境生意的每一环都在漏钱：没人搜得到你、询盘接不住、装柜太亏、单证被退。JetSocio 把四个环节的工具收进一个工作台，让获客、转化、履约、合规一次补齐。
         </p>
         <div class="stats">
-          <div class="stat"><div class="v">+20%</div><div class="k">装箱空间利用率</div></div>
-          <div class="stat"><div class="v">&lt;5%</div><div class="k">单证误报率</div></div>
-          <div class="stat"><div class="v">100%</div><div class="k">核心数据自持</div></div>
+          <div class="stat"><div class="v">+20%</div><div class="k" data-i18n="stat_box">装箱空间利用率</div></div>
+          <div class="stat"><div class="v">&lt;5%</div><div class="k" data-i18n="stat_doc">单证误报率</div></div>
+          <div class="stat"><div class="v">100%</div><div class="k" data-i18n="stat_data">核心数据自持</div></div>
         </div>
       </section>
 
       <section class="card audit">
-        <h2>免费 GEO 体检</h2>
-        <p class="sub">输入网址，30 秒看你的页面是否被 AI 优先引用。</p>
+        <h2 data-i18n="audit_title">免费 GEO 体检</h2>
+        <p class="sub" data-i18n="audit_sub">输入网址，30 秒看你的页面是否被 AI 优先引用。</p>
         <form id="audit-form">
-          <label for="audit-url" style="position:absolute;left:-9999px;">网站地址</label>
-          <input id="audit-url" type="text" placeholder="example.com" />
-          <button id="audit-submit" type="submit" class="btn btn-primary submit">免费体检</button>
+          <label for="audit-url" style="position:absolute;left:-9999px;" data-i18n="r_target">体检目标</label>
+          <input id="audit-url" type="text" data-i18n-attr="placeholder:audit_placeholder" placeholder="example.com" />
+          <button id="audit-submit" type="submit" class="btn btn-primary submit" data-i18n="audit_submit">免费体检</button>
         </form>
-        <div id="audit-loading" class="audit-loading hidden">体检中…</div>
+        <div id="audit-loading" class="audit-loading hidden" data-i18n="audit_loading">体检中…</div>
         <div id="audit-report"></div>
       </section>
     </div>
 
     <section id="value" class="section">
-      <h2>跨境业务，卡在哪一步？</h2>
-      <p class="desc">四个高频痛点，对应 JetSocio 的四款工具。从流量到签收，每一步都补上。</p>
+      <h2 data-i18n="value_title">跨境业务，卡在哪一步？</h2>
+      <p class="desc" data-i18n="value_desc">四个高频痛点，对应 JetSocio 的四款工具。从流量到签收，每一步都补上。</p>
       <div class="pain-grid">
         <div class="card pain">
-          <div class="stage">01 · 获客</div>
-          <h3>没人搜得到你</h3>
-          <p>买家在 ChatGPT / 豆包 / DeepSeek 问「哪家供应商好」，AI 根本不引用你。</p>
+          <div class="stage" data-i18n="pain_01_stage">01 · 获客</div>
+          <h3 data-i18n="pain_01_title">没人搜得到你</h3>
+          <p data-i18n="pain_01_desc">买家在 ChatGPT / 豆包 / DeepSeek 问「哪家供应商好」，AI 根本不引用你。</p>
         </div>
         <div class="card pain">
-          <div class="stage">02 · 转化</div>
-          <h3>询盘接不住</h3>
-          <p>WhatsApp 消息散落各处，跟进靠记忆，订单在聊天里溜走。</p>
+          <div class="stage" data-i18n="pain_02_stage">02 · 转化</div>
+          <h3 data-i18n="pain_02_title">询盘接不住</h3>
+          <p data-i18n="pain_02_desc">WhatsApp 消息散落各处，跟进靠记忆，订单在聊天里溜走。</p>
         </div>
         <div class="card pain">
-          <div class="stage">03 · 履约</div>
-          <h3>装箱太亏</h3>
-          <p>柜子装不满、危险品隔离靠手算，每一柜都多花冤枉钱。</p>
+          <div class="stage" data-i18n="pain_03_stage">03 · 履约</div>
+          <h3 data-i18n="pain_03_title">装箱太亏</h3>
+          <p data-i18n="pain_03_desc">柜子装不满、危险品隔离靠手算，每一柜都多花冤枉钱。</p>
         </div>
         <div class="card pain">
-          <div class="stage">04 · 合规</div>
-          <h3>单证被退</h3>
-          <p>报关单、发票、提单对不上，清关延误、客户信任受损。</p>
+          <div class="stage" data-i18n="pain_04_stage">04 · 合规</div>
+          <h3 data-i18n="pain_04_title">单证被退</h3>
+          <p data-i18n="pain_04_desc">报关单、发票、提单对不上，清关延误、客户信任受损。</p>
         </div>
       </div>
     </section>
 
     <section id="products" class="section">
-      <h2>产品矩阵</h2>
-      <p class="desc">每一款都可独立使用，组合在一起构成完整的跨境工作流。</p>
+      <h2 data-i18n="products_title">产品矩阵</h2>
+      <p class="desc" data-i18n="products_desc">每一款都可独立使用，组合在一起构成完整的跨境工作流。</p>
       <div id="chain" class="product-grid">
         <article class="card pcard">
           <div class="pcard-head">
             <div class="pcard-id">
               <span class="pcard-icon" style="background:#2563eb;">G</span>
-              <div><h3>Geo Pro</h3><div class="role">AI 内容 + GEO 引用优化</div></div>
+              <div><h3>Geo Pro</h3><div class="role" data-i18n="geopro_role">AI 内容 + GEO 引用优化</div></div>
             </div>
-            <span class="chip">自托管</span>
+            <span class="chip" data-i18n="geopro_chip">自托管</span>
           </div>
-          <p class="body">让 AI 搜索引擎优先引用你的内容。内置知识库、AI 生成、AI 可见性观测与多渠道分发，本地部署、数据完全自持。</p>
+          <p class="body" data-i18n="geopro_body">让 AI 搜索引擎优先引用你的内容。内置知识库、AI 生成、AI 可见性观测与多渠道分发，本地部署、数据完全自持。</p>
           <ul>
-            <li><span class="ok">✓</span> 提升在 LLM 回答中的引用概率</li>
-            <li><span class="ok">✓</span> 内容生产 → 观测 → 分发闭环</li>
-            <li><span class="ok">✓</span> 整站零外部 API 依赖</li>
+            <li><span class="ok">✓</span> <span data-i18n="geopro_li1">提升在 LLM 回答中的引用概率</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="geopro_li2">内容生产 → 观测 → 分发闭环</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="geopro_li3">整站零外部 API 依赖</span></li>
           </ul>
-          <a class="more" href="products/geo-pro.html">了解功能与部署 →</a>
+          <a class="more" href="products/geo-pro.html" data-i18n="geopro_more">了解功能与部署 →</a>
         </article>
 
         <article class="card pcard">
           <div class="pcard-head">
             <div class="pcard-id">
               <span class="pcard-icon" style="background:#475569;">S</span>
-              <div><h3>SalesBuddy</h3><div class="role">WhatsApp 私域 CRM</div></div>
+              <div><h3>SalesBuddy</h3><div class="role" data-i18n="salesbuddy_role">WhatsApp 私域 CRM</div></div>
             </div>
-            <span class="chip">开源</span>
+            <span class="chip" data-i18n="salesbuddy_chip">开源</span>
           </div>
-          <p class="body">把 WhatsApp 变成销售中枢：共享收件箱、联系人、销售管道、群发与无代码自动化——自托管、数据归你。</p>
+          <p class="body" data-i18n="salesbuddy_body">把 WhatsApp 变成销售中枢：共享收件箱、联系人、销售管道、群发与无代码自动化——自托管、数据归你。</p>
           <ul>
-            <li><span class="ok">✓</span> 询盘自动归集，不再漏回</li>
-            <li><span class="ok">✓</span> 销售管道可视化跟进</li>
-            <li><span class="ok">✓</span> 群发 + 自动化工作流</li>
+            <li><span class="ok">✓</span> <span data-i18n="salesbuddy_li1">询盘自动归集，不再漏回</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="salesbuddy_li2">销售管道可视化跟进</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="salesbuddy_li3">群发 + 自动化工作流</span></li>
           </ul>
-          <a class="more" href="products/salesbuddy.html">了解功能与部署 →</a>
+          <a class="more" href="products/salesbuddy.html" data-i18n="salesbuddy_more">了解功能与部署 →</a>
         </article>
 
         <article class="card pcard">
           <div class="pcard-head">
             <div class="pcard-id">
               <span class="pcard-icon" style="background:#0891b2;">P</span>
-              <div><h3>PackMeta</h3><div class="role">3D 装箱优化平台</div></div>
+              <div><h3>PackMeta</h3><div class="role" data-i18n="packmeta_role">3D 装箱优化平台</div></div>
             </div>
-            <span class="chip">在线</span>
+            <span class="chip" data-i18n="packmeta_chip">在线</span>
           </div>
-          <p class="body">上传装箱单，30 秒生成 3D 装柜方案。空间利用率 +20%，IMDG 危险品隔离 / LIFO / 承重校验一键完成。</p>
+          <p class="body" data-i18n="packmeta_body">上传装箱单，30 秒生成 3D 装柜方案。空间利用率 +20%，IMDG 危险品隔离 / LIFO / 承重校验一键完成。</p>
           <ul>
-            <li><span class="ok">✓</span> 六大行业模板（冷链/化工/大件…）</li>
-            <li><span class="ok">✓</span> 运费立省、PDF 装柜报告</li>
-            <li><span class="ok">✓</span> Three.js 3D 预览</li>
+            <li><span class="ok">✓</span> <span data-i18n="packmeta_li1">六大行业模板（冷链/化工/大件…）</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="packmeta_li2">运费立省、PDF 装柜报告</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="packmeta_li3">Three.js 3D 预览</span></li>
           </ul>
-          <a class="more" href="https://packmeta.pages.dev/" target="_blank" rel="noopener">访问 Demo →</a>
+          <a class="more" href="https://packmeta.pages.dev/" target="_blank" rel="noopener" data-i18n="packmeta_more">访问 Demo →</a>
         </article>
 
         <article class="card pcard">
           <div class="pcard-head">
             <div class="pcard-id">
               <span class="pcard-icon" style="background:#059669;">D</span>
-              <div><h3>DocuConsist</h3><div class="role">外贸单证一致核验</div></div>
+              <div><h3>DocuConsist</h3><div class="role" data-i18n="docuconsist_role">外贸单证一致核验</div></div>
             </div>
-            <span class="chip">在线</span>
+            <span class="chip" data-i18n="docuconsist_chip">在线</span>
           </div>
-          <p class="body">上传报关单 / 发票 / 提单 / 合同（≤8 份），30 秒跨单「三一致」比对，每条提示可溯源（UCP600 / ISBP）。</p>
+          <p class="body" data-i18n="docuconsist_body">上传报关单 / 发票 / 提单 / 合同（≤8 份），30 秒跨单「三一致」比对，每条提示可溯源（UCP600 / ISBP）。</p>
           <ul>
-            <li><span class="ok">✓</span> 单证不符 / FOB 责任错配预警</li>
-            <li><span class="ok">✓</span> OFAC 制裁筛查、运费单核验</li>
-            <li><span class="ok">✓</span> 误报率 &lt;5%，免费免登录</li>
+            <li><span class="ok">✓</span> <span data-i18n="docuconsist_li1">单证不符 / FOB 责任错配预警</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="docuconsist_li2">OFAC 制裁筛查、运费单核验</span></li>
+            <li><span class="ok">✓</span> <span data-i18n="docuconsist_li3">误报率 &lt;5%，免费免登录</span></li>
           </ul>
-          <a class="more" href="https://docuconsist.com/" target="_blank" rel="noopener">访问 Demo →</a>
+          <a class="more" href="https://docuconsist.com/" target="_blank" rel="noopener" data-i18n="docuconsist_more">访问 Demo →</a>
         </article>
       </div>
     </section>
 
     <section class="band">
-      <h2 style="font-size:20px;font-weight:700;color:#fff;">四款工具，一条跨境链路</h2>
-      <p>Geo Pro 帮你被看见 → SalesBuddy 把询盘接住 → PackMeta 让每一柜更省 → DocuConsist 守住清关。从流量到签收，JetSocio 补齐你今天正在漏掉的每一块钱。</p>
+      <h2 style="font-size:20px;font-weight:700;color:#fff;" data-i18n="band_title">四款工具，一条跨境链路</h2>
+      <p data-i18n="band_desc">Geo Pro 帮你被看见 → SalesBuddy 把询盘接住 → PackMeta 让每一柜更省 → DocuConsist 守住清关。从流量到签收，JetSocio 补齐你今天正在漏掉的每一块钱。</p>
       <div class="row">
-        <a href="products/geo-pro.html" class="btn btn-primary">了解 Geo Pro</a>
-        <a href="#products" class="btn btn-ghost">浏览全部产品</a>
+        <a href="products/geo-pro.html" class="btn btn-primary" data-i18n="band_btn1">了解 Geo Pro</a>
+        <a href="#products" class="btn btn-ghost" data-i18n="band_btn2">浏览全部产品</a>
       </div>
     </section>
   </main>
 
   <footer>
     <div class="footer-inner">
-      <span>© JetSocio · 跨境业务工具栈</span>
+      <span data-i18n="footer_home">© JetSocio · 跨境业务工具栈</span>
     </div>
   </footer>
 
+  <script src="assets/i18n.js"></script>
   <script src="assets/report.js"></script>
 </body>
 </html>
