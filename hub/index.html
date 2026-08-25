@@ -164,6 +164,28 @@
     .report-error h3 { margin-top: 20px; font-size: 18px; font-weight: 700; color: #fff; }
     .report-error .target { margin-top: 8px; font-size: 14px; color: var(--muted); word-break: break-all; }
     .report-error .msg { margin-top: 12px; font-size: 14px; color: #ef4444; }
+    /* deep audit: category cards */
+    .report-cats { display: grid; gap: 12px; }
+    .rcat { border-radius: 16px; background: var(--surface); border: 1px solid var(--line); padding: 16px 18px; }
+    .rch { display: flex; align-items: center; gap: 10px; }
+    .rch h3 { font-size: 15px; font-weight: 700; color: #fff; flex: 1; min-width: 0; }
+    .rc-dot { height: 10px; width: 10px; border-radius: 50%; flex-shrink: 0; }
+    .rchip { font-size: 12px; font-weight: 700; border: 1px solid; border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+    .ri { margin-top: 10px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 8px; }
+    .ri summary { cursor: pointer; display: flex; align-items: center; gap: 8px; list-style: none; }
+    .ri summary::-webkit-details-marker { display: none; }
+    .sev { flex-shrink: 0; font-size: 11px; font-weight: 700; border-radius: 6px; padding: 1px 8px; }
+    .sev-critical { background: rgba(239,68,68,0.18); color: #f87171; }
+    .sev-warning { background: rgba(245,158,11,0.16); color: #fbbf24; }
+    .sev-info { background: rgba(59,130,246,0.16); color: #93c5fd; }
+    .ri .rt { font-size: 14px; color: #e2e8f0; }
+    .rb { margin-top: 6px; display: flex; flex-direction: column; gap: 6px; }
+    .rd { font-size: 13px; color: #94a3b8; }
+    .rf { font-size: 13px; color: #cbd5e1; }
+    .rf b { color: #7ea6ff; font-weight: 600; }
+    .rev summary { font-size: 12px; color: var(--muted); cursor: pointer; }
+    .rev pre { margin-top: 6px; font-size: 12px; white-space: pre-wrap; word-break: break-all; color: #94a3b8; background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: 8px; padding: 8px; max-height: 120px; overflow: auto; }
+    .ri-all { margin-top: 10px; font-size: 13px; color: #34d399; }
   </style>
 </head>
 <body>

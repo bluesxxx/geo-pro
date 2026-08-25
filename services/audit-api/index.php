@@ -27,6 +27,7 @@ const ALLOWED_ORIGINS = [
     'https://jetsocio.com',
     'https://www.jetsocio.com',
     'https://jetsocio.pages.dev',
+    'https://jetsocio-hub.pages.dev',
 ];
 
 const RATE_LIMIT_PER_MINUTE = 10;

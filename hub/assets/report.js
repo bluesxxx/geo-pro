@@ -79,17 +79,62 @@
         ? { color: "#f59e0b", label: tt("r_score_warn", "待提升") }
         : { color: "#ef4444", label: tt("r_score_low", "需改进") };
 
-    const features = data.raw_features || {};
-    const signals = [
-      { label: tt("r_signal_h1", "H1 主标题"), ok: !!features.has_h1 },
-      { label: tt("r_signal_jsonld", "JSON-LD 结构化数据"), ok: !data.missing_schema },
-      { label: tt("r_signal_faq", "FAQPage 结构化数据"), ok: !data.missing_faq },
-      { label: tt("r_signal_text", "正文内容量"), ok: (features.text_length | 0) >= 400 },
-    ];
+    // Deep audit categories (meta / structured / ai_ready / content)
+    const cats = Array.isArray(data.categories) ? data.categories : [];
+    const catHtml = cats.map(function (cat) {
+      const total = cat.total | 0;
+      const passed = cat.passed | 0;
+      const pct = total > 0 ? Math.round((passed / total) * 100) : 100;
+      const color = pct >= 80 ? "#34d399" : pct >= 50 ? "#f59e0b" : "#ef4444";
+      const issues = Array.isArray(cat.issues) ? cat.issues : [];
 
-    const suggestions = Array.isArray(data.suggestions) && data.suggestions.length
+      const issueItems = issues.length === 0
+        ? '<p class="ri-all">' + escapeHtml(tt("r_cat_allpass", "本类全部通过")) + "</p>"
+        : issues.map(function (iss) {
+            const sev = String(iss.severity || "info");
+            const title = tt("i_" + iss.code + "_t", iss.code);
+            const detail = tt("i_" + iss.code + "_d", "");
+            const rec = tt("i_" + iss.code + "_r", "");
+
+            return '<details class="ri">'
+              + "<summary>"
+              + '<span class="sev sev-' + escapeHtml(sev) + '">' + escapeHtml(tt("r_sev_" + sev, sev)) + "</span>"
+              + '<span class="rt">' + escapeHtml(title) + "</span>"
+              + "</summary>"
+              + '<div class="rb">'
+              + (detail ? '<p class="rd">' + escapeHtml(detail) + "</p>" : "")
+              + (rec ? '<p class="rf"><b>' + escapeHtml(tt("r_howto", "如何修复：")) + "</b> " + escapeHtml(rec) + "</p>" : "")
+              + (iss.evidence
+                  ? '<details class="rev"><summary>' + escapeHtml(tt("r_evidence", "证据")) + "</summary><pre>"
+                    + escapeHtml(String(iss.evidence)) + "</pre></details>"
+                  : "")
+              + "</div>"
+              + "</details>";
+          }).join("");
+
+      return '<div class="rcat">'
+        + '<div class="rch">'
+        + '<span class="rc-dot" style="background:' + color + '"></span>'
+        + "<h3>" + escapeHtml(tt("r_cat_" + cat.id, cat.id)) + "</h3>"
+        + '<span class="rchip" style="color:' + color + ";border-color:" + color + '">' + passed + "/" + total + "</span>"
+        + "</div>"
+        + issueItems
+        + "</div>";
+    }).join("");
+
+    // Legacy suggestion list; fall back to the top issue recommendations.
+    let suggestions = Array.isArray(data.suggestions) && data.suggestions.length
       ? data.suggestions
-      : [tt("r_default_suggest", "页面结构良好，可进一步补充原创数据与权威引用。")];
+      : null;
+    if (!suggestions) {
+      const topIssues = Array.isArray(data.issues) ? data.issues.slice(0, 5) : [];
+      suggestions = topIssues
+        .map(function (iss) { return tt("i_" + iss.code + "_r", ""); })
+        .filter(Boolean);
+    }
+    if (!suggestions || !suggestions.length) {
+      suggestions = [tt("r_default_suggest", "页面结构良好，可进一步补充原创数据与权威引用。")];
+    }
 
     const R = 52;
     const C = 2 * Math.PI * R;
@@ -112,19 +157,17 @@
             <div class="report-meta">
               <p class="t">${tt("r_target", "体检目标")}</p>
               <p class="u">${escapeHtml(data.url || "")}</p>
-              <p class="h">${tt("r_score_hint", "GEO 引用友好度评分：分数越高，AI 在回答用户问题时越可能引用你的内容。")}</p>
+              <p class="h">${tt("r_score_hint2", tt("r_score_hint", "GEO 就绪度评分：分数越高，AI 在回答用户问题时越可能引用你的内容。"))}</p>
+              ${data.passed_checks != null && data.total_checks != null
+                  ? `<p class="h"><b style="color:#fff">${data.passed_checks}/${data.total_checks}</b> ${tt("r_checks_passed", "项检测通过")}</p>`
+                  : ""}
               <a href="products/geo-pro.html" class="report-cta-link">${tt("r_cta_btn2", "了解 Geo Pro 完整版")}</a>
             </div>
           </div>
         </div>
 
-        <div class="report-grid">
-          ${signals.map(function (s) {
-            return `<div class="report-signal">
-              <span class="report-ic ${s.ok ? "ok" : "bad"}">${s.ok ? CHECK_ICON : X_ICON}</span>
-              <div><p class="st">${escapeHtml(s.label)}</p><p class="sb">${s.ok ? tt("r_ok", "已具备") : tt("r_missing", "缺失")}</p></div>
-            </div>`;
-          }).join("")}
+        <div class="report-cats">
+          ${catHtml}
         </div>
 
         <div class="report-suggest">

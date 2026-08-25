@@ -12,7 +12,10 @@ use GeoPro\AuditEngine\AuditException;
 use GeoPro\AuditEngine\AuditResult;
 use GeoPro\AuditEngine\CurlWebPageFetcher;
 use GeoPro\AuditEngine\FeatureExtractor;
+use GeoPro\AuditEngine\GeoAuditScorer;
 use GeoPro\AuditEngine\HeuristicScorer;
+use GeoPro\AuditEngine\IssuePresenter;
+use GeoPro\AuditEngine\PageSnapshot;
 use GeoPro\AuditEngine\WebPageFetcherInterface;
 
 $tests = 0;
@@ -110,14 +113,60 @@ $fakeFetcher = new class($htmlFull) implements WebPageFetcherInterface {
     }
 };
 
-$engine = new AuditEngine($fakeFetcher);
+// Deep engine (GeoAudit rules): llms.txt probes return 404 deterministically.
+$probe404 = static fn (string $url): array => ['status' => 404, 'body' => ''];
+
+$engine = new AuditEngine($fakeFetcher, new HeuristicScorer(), $probe404);
 $result = $engine->run('https://example.com/guide');
 check('engine: instance', $result instanceof AuditResult);
-check('engine: score', same(95, $result->score), 'got '.$result->score);
 check('engine: url', same('https://example.com/guide', $result->url));
 check('engine: raw_features has title', same('GEO 优化指南', $result->rawFeatures['title'] ?? null));
 check('engine: no error', same(null, $result->error));
-check('engine: toArray keys', isset($result->toArray()['suggestions']));
+
+/* fixture_full.html readiness math:
+ * meta:      title/desc/h1 pass; canonical/robots/og_title/og_image/twitter fail => 3/8
+ * jsonld:    present pass; org/website/breadcrumb fail (block_count numeric + schema_types
+ *            listing skipped)                                              => 1/4
+ * structured: faq+article pass, howto/product fail                            => 2/4
+ * llms_txt:  both files 404                                                   => 0/2
+ * content:   only "faq" matched                                               => 1/9
+ * total scoreable = 27, passed = 7 -> readiness = round(7/27*100) = 26
+ */
+check('engine: readiness score 26', same(26, $result->score), 'got '.$result->score);
+check('engine: passed_checks 7', same(7, $result->passedChecks), 'got '.$result->passedChecks);
+check('engine: total_checks 27', same(27, $result->totalChecks), 'got '.$result->totalChecks);
+
+$categoryIds = array_map(fn ($c) => $c['id'], $result->categories);
+check('engine: category ids', same(['meta', 'structured', 'ai_ready', 'content'], $categoryIds), json_encode($categoryIds));
+
+$metaCat = null;
+foreach ($result->categories as $c) {
+    if ($c['id'] === 'meta') {
+        $metaCat = $c;
+    }
+}
+check('engine: meta category tally', $metaCat !== null && $metaCat['passed'] === 3 && $metaCat['total'] === 8,
+    json_encode($metaCat ?? []));
+
+check('engine: first issue is critical', ($result->issues[0]['severity'] ?? '') === 'critical',
+    json_encode($result->issues[0] ?? []));
+check('engine: issues contain llms_txt_present', in_array('llms_txt_present', array_column($result->issues, 'code'), true));
+check('engine: informational schema listing not an issue', ! in_array('jsonld_schema_types', array_column($result->issues, 'code'), true));
+
+$arr = $result->toArray();
+check('engine: toArray legacy keys', isset($arr['missing_faq'], $arr['missing_schema'], $arr['suggestions'], $arr['raw_features']));
+check('engine: toArray new keys', isset($arr['categories'], $arr['issues'], $arr['passed'], $arr['facts'], $arr['total_checks'], $arr['passed_checks']));
+check('engine: legacy missing_faq false', same(false, $arr['missing_faq']));
+
+// Transport failure on the llms probe maps to status=error facts, still scored as failures.
+$probeThrows = static function (string $url): array {
+    throw new \RuntimeException('dns timeout');
+};
+$engineErr = new AuditEngine($fakeFetcher, new HeuristicScorer(), $probeThrows);
+$resultErr = $engineErr->run('https://example.com/guide');
+check('engine: llms transport error scored', same(26, $resultErr->score), 'got '.$resultErr->score);
+$errFacts = array_values(array_filter($resultErr->facts, fn ($f) => $f['key'] === 'llms_txt.present'));
+check('engine: llms error status', (($errFacts[0]['status'] ?? '') === 'error'), json_encode($errFacts[0] ?? []));
 
 $failingFetcher = new class implements WebPageFetcherInterface {
     public function fetch(string $url): string
@@ -128,6 +177,51 @@ $failingFetcher = new class implements WebPageFetcherInterface {
 $failed = (new AuditEngine($failingFetcher))->run('https://127.0.0.1/');
 check('engine: failure result', $failed instanceof AuditResult && $failed->error === '目标地址不允许访问');
 check('engine: failure score 0', same(0, $failed->score));
+
+/* ============ PageSnapshot ============ */
+
+$snap = PageSnapshot::fromHtml('https://example.com/guide', $htmlFull);
+check('snapshot: metadata title', same('GEO 优化指南', $snap->metadata['title']));
+check('snapshot: metadata description', same('网站 GEO 优化完整指南。', $snap->metadata['description']));
+check('snapshot: jsonld blocks count', same(2, count($snap->jsonLdBlocks)));
+check('snapshot: headings include h1 text', str_contains($snap->headings, '生成式引擎优化完全指南'));
+check('snapshot: empty html safe', PageSnapshot::fromHtml('https://x.test/', '')->text === '');
+
+/* ============ GeoAuditScorer ============ */
+
+check('scorer: null when nothing scoreable', same(null, GeoAuditScorer::score([
+    ['key' => 'jsonld.block_count', 'status' => '3'],
+    ['key' => 'jsonld.schema_types', 'status' => 'Organization'],
+])));
+check('scorer: half passed rounds to 50', same(50, GeoAuditScorer::score([
+    ['key' => 'a', 'status' => 'present'],
+    ['key' => 'b', 'status' => 'absent'],
+])));
+
+/* ============ IssuePresenter ============ */
+
+$pres = IssuePresenter::build([
+    ['check' => 'meta', 'key' => 'meta.title', 'status' => 'absent', 'evidence' => null],
+    ['check' => 'meta', 'key' => 'meta.description', 'status' => 'present', 'evidence' => 'desc'],
+    ['check' => 'llms_txt', 'key' => 'llms_txt.parse_error', 'status' => 'parse_error', 'evidence' => 'empty body'],
+    ['check' => 'jsonld', 'key' => 'jsonld.schema_types', 'status' => 'Article, FAQPage', 'evidence' => null],
+    ['check' => 'jsonld', 'key' => 'jsonld.block_count', 'status' => '2', 'evidence' => null],
+]);
+
+check('presenter: one issue for absent title', count(array_filter($pres['issues'], fn ($i) => $i['code'] === 'meta_title')) === 1);
+$titleIssue = array_values(array_filter($pres['issues'], fn ($i) => $i['code'] === 'meta_title'))[0] ?? null;
+check('presenter: severity critical', $titleIssue !== null && $titleIssue['severity'] === 'critical');
+check('presenter: parse_error becomes issue', count(array_filter($pres['issues'], fn ($i) => $i['code'] === 'llms_txt_parse_error')) === 1);
+check('presenter: informational statuses skipped', count($pres['issues']) === 2, 'got '.count($pres['issues']));
+check('presenter: passed collected', count($pres['passed']) === 1 && $pres['passed'][0]['code'] === 'meta_description');
+
+$order = IssuePresenter::build([
+    ['key' => 'meta.og_image', 'status' => 'absent'],
+    ['key' => 'meta.title', 'status' => 'absent'],
+    ['key' => 'meta.description', 'status' => 'absent'],
+]);
+check('presenter: critical before warning before info',
+    same(['critical', 'warning', 'info'], array_column($order['issues'], 'severity')));
 
 /* ============ CurlWebPageFetcher SSRF guard (no network) ============ */
 
